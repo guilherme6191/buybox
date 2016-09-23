@@ -20,10 +20,12 @@ class Profile extends React.Component {
   }
 
   handleChange(event) {
+    debugger;
     this.setState({ [event.target.name]: event.target.value });
   }
 
   handleProfileUpdate(event) {
+    debugger;
     event.preventDefault();
     this.props.dispatch(updateProfile(this.state, this.props.token));
   }

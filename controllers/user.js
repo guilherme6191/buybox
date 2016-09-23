@@ -45,9 +45,7 @@ exports.ensureAuthenticated = function(req, res, next) {
 
     User.findOne({ email: req.body.email }, function(err, user) {
       if (!user) {
-        return res.status(401).send({ msg: 'The email address ' + req.body.email + ' is not associated with any account. ' +
-        'Double-check your email address and try again.'
-        });
+        return res.status(401).send({ msg: 'Invalid email or password' });
       }
       user.comparePassword(req.body.password, function(err, isMatch) {
         if (!isMatch) {

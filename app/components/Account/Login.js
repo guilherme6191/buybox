@@ -21,7 +21,6 @@ class Login extends React.Component {
   }
 
   handleFacebook() {
-    console.log(this);
     this.props.dispatch(facebookLogin())
   }
 

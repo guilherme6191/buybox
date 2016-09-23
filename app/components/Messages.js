@@ -3,7 +3,6 @@ import React from 'react';
 class Messages extends React.Component {
   
   render() {
-    console.log("teste");
     return this.props.messages.success ? (
       <div role="alert" className="alert alert-success">
         {this.props.messages.success.map((message, index) => <div key={index}>{message.msg}</div>)}
