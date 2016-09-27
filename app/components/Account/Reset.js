@@ -27,15 +27,15 @@ class Reset extends React.Component {
             <form onSubmit={this.handleReset.bind(this)}>
               <legend>Reset Password</legend>
               <div className="form-group">
-                <label htmlFor="password">New Password</label>
+                <label htmlFor="password">Nova senha</label>
                 <input type="password" name="password" id="password" placeholder="New password" className="form-control" autoFocus value={this.state.password} onChange={this.handleChange.bind(this)}/>
               </div>
               <div className="form-group">
-                <label htmlFor="confirm">Confirm Password</label>
+                <label htmlFor="confirm">Confirmar senha</label>
                 <input type="password" name="confirm" id="confirm" placeholder="Confirm password" className="form-control" value={this.state.confirm} onChange={this.handleChange.bind(this)}/>
               </div>
               <div className="form-group">
-                <button type="submit" className="btn btn-success">Change Password</button>
+                <button type="submit" className="btn btn-success">Alterar!</button>
               </div>
             </form>
           </div>

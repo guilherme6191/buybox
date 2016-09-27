@@ -1,6 +1,7 @@
 var async = require('async');
 var crypto = require('crypto');
 var nodemailer = require('nodemailer');
+var mg = require('nodemailer-mailgun-transport');
 var jwt = require('jsonwebtoken');
 var moment = require('moment');
 var request = require('request');
@@ -15,6 +16,13 @@ function generateToken(user) {
     exp: moment().add(7, 'days').unix()
   };
   return jwt.sign(payload, process.env.TOKEN_SECRET);
+}
+
+var mailAuth = {
+  auth: {
+    api_key: 'key-81424b07942e163bb760fdc88198ee70',
+    domain: 'sandbox2ba027822c204b4383da167aaabef499.mailgun.org'
+  }
 }
 
 /**
@@ -32,9 +40,9 @@ exports.ensureAuthenticated = function(req, res, next) {
    * Sign in with email and password
    */
   exports.loginPost = function(req, res, next) {
-    req.assert('email', 'Email is not valid').isEmail();
-    req.assert('email', 'Email cannot be blank').notEmpty();
-    req.assert('password', 'Password cannot be blank').notEmpty();
+    req.assert('email', 'Email inválido').isEmail();
+    req.assert('email', 'Email não pode estar em branco.').notEmpty();
+    req.assert('password', 'Password não pode estar em branco.').notEmpty();
     req.sanitize('email').normalizeEmail({ remove_dots: false });
 
     var errors = req.validationErrors();
@@ -60,10 +68,10 @@ exports.ensureAuthenticated = function(req, res, next) {
  * POST /signup
  */
 exports.signupPost = function(req, res, next) {
-  req.assert('name', 'Name cannot be blank').notEmpty();
-  req.assert('email', 'Email is not valid').isEmail();
-  req.assert('email', 'Email cannot be blank').notEmpty();
-  req.assert('password', 'Password must be at least 4 characters long').len(4);
+  req.assert('name', 'Name não pode estar em branco.').notEmpty();
+  req.assert('email', 'Email inválido').isEmail();
+  req.assert('email', 'Email não pode estar em branco.').notEmpty();
+  req.assert('password', 'senhadeve ter pelo menos 4 caracteres').len(4);
   req.sanitize('email').normalizeEmail({ remove_dots: false });
 
   var errors = req.validationErrors();
@@ -94,11 +102,11 @@ exports.signupPost = function(req, res, next) {
  */
 exports.accountPut = function(req, res, next) {
   if ('password' in req.body) {
-    req.assert('password', 'Password must be at least 4 characters long').len(4);
-    req.assert('confirm', 'Passwords must match').equals(req.body.password);
+    req.assert('password', 'senha deve ter pelo menos 4 caracteres').len(4);
+    req.assert('confirm', 'Senha deve ser válida').equals(req.body.password);
   } else {
-    req.assert('email', 'Email is not valid').isEmail();
-    req.assert('email', 'Email cannot be blank').notEmpty();
+    req.assert('email', 'Email inválido').isEmail();
+    req.assert('email', 'Email não pode estar em branco.').notEmpty();
     req.sanitize('email').normalizeEmail({ remove_dots: false });
   }
 
@@ -120,9 +128,9 @@ exports.accountPut = function(req, res, next) {
     }
     user.save(function(err) {
       if ('password' in req.body) {
-        res.send({ msg: 'Your password has been changed.' });
+        res.send({ msg: 'Your senha has been changed.' });
       } else if (err && err.code === 11000) {
-        res.status(409).send({ msg: 'The email address you have entered is already associated with another account.' });
+        res.status(409).send({ msg: 'O email inserido já está associado com outra conta.' });
       } else {
         res.send({ user: user, msg: 'Your profile information has been updated.' });
       }
@@ -173,8 +181,8 @@ exports.unlink = function(req, res, next) {
  * POST /forgot
  */
 exports.forgotPost = function(req, res, next) {
-  req.assert('email', 'Email is not valid').isEmail();
-  req.assert('email', 'Email cannot be blank').notEmpty();
+  req.assert('email', 'Email inválido').isEmail();
+  req.assert('email', 'Email não pode estar em branco.').notEmpty();
   req.sanitize('email').normalizeEmail({ remove_dots: false });
 
   var errors = req.validationErrors();
@@ -193,7 +201,7 @@ exports.forgotPost = function(req, res, next) {
     function(token, done) {
       User.findOne({ email: req.body.email }, function(err, user) {
         if (!user) {
-          return res.status(400).send({ msg: 'The email address ' + req.body.email + ' is not associated with any account.' });
+          return res.status(400).send({ msg: 'O email ' + req.body.email + ' não é associado com nenhuma conta.' });
         }
         user.passwordResetToken = token;
         user.passwordResetExpires = Date.now() + 3600000; // expire in 1 hour
@@ -203,25 +211,22 @@ exports.forgotPost = function(req, res, next) {
       });
     },
     function(token, user, done) {
-      var transporter = nodemailer.createTransport({
-        service: 'Mailgun',
-        auth: {
-          user: process.env.MAILGUN_USERNAME,
-          pass: process.env.MAILGUN_PASSWORD
-        }
-      });
-      var mailOptions = {
-        to: user.email,
-        from: 'support@yourdomain.com',
-        subject: '✔ Reset your password on Mega Boilerplate',
-        text: 'You are receiving this email because you (or someone else) have requested the reset of the password for your account.\n\n' +
-        'Please click on the following link, or paste this into your browser to complete the process:\n\n' +
-        'http://' + req.headers.host + '/reset/' + token + '\n\n' +
-        'If you did not request this, please ignore this email and your password will remain unchanged.\n'
-      };
-      transporter.sendMail(mailOptions, function(err) {
-        res.send({ msg: 'An email has been sent to ' + user.email + ' with further instructions.' });
-        done(err);
+      var nodemailerMailgun = nodemailer.createTransport(mg(mailAuth));
+      nodemailerMailgun.sendMail({
+          from: 'postmaster@sandbox2ba027822c204b4383da167aaabef499.mailgun.org',
+          to: user.email,
+          subject: '✔ Reset your password on BuyBox!',
+          text: 'You are receiving this email because you (or someone else) have requested the reset of the password for your account.\n\n' +
+            'Please click on the following link, or paste this into your browser to complete the process:\n\n' +
+            'http://' + req.headers.host + '/reset/' + token + '\n\n' +
+            'If you did not request this, please ignore this email and your password will remain unchanged.\n'
+        }, function (err, info) {
+          if (err) {
+            console.log('Error: ' + err);
+          }
+          else {
+            console.log('Response: ' + info);
+          }
       });
     }
   ]);
@@ -231,8 +236,8 @@ exports.forgotPost = function(req, res, next) {
  * POST /reset
  */
 exports.resetPost = function(req, res, next) {
-  req.assert('password', 'Password must be at least 4 characters long').len(4);
-  req.assert('confirm', 'Passwords must match').equals(req.body.password);
+  req.assert('password', 'Senha deve ter pelo menos 4 caracteres').len(4);
+  req.assert('confirm', 'Senha deve ser igual').equals(req.body.password);
 
   var errors = req.validationErrors();
 
@@ -272,7 +277,7 @@ exports.resetPost = function(req, res, next) {
         'This is a confirmation that the password for your account ' + user.email + ' has just been changed.\n'
       };
       transporter.sendMail(mailOptions, function(err) {
-        res.send({ msg: 'Your password has been changed successfully.' });
+        res.send({ msg: 'Sua senha foi alterada com sucesso.' });
       });
     }
   ]);
@@ -329,7 +334,7 @@ exports.authFacebook = function(req, res) {
           }
           User.findOne({ email: profile.email }, function(err, user) {
             if (user) {
-              return res.status(400).send({ msg: user.email + ' is already associated with another account.' })
+              return res.status(400).send({ msg: user.email + ' está associado com outra conta.' })
             }
             user = new User({
               name: profile.name,

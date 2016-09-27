@@ -47,24 +47,24 @@ class Login extends React.Component {
                       value={this.state.email} onChange={this.handleChange.bind(this)}/>
               </div>
               <div className="form-group">
-                <label htmlFor="password">Password</label>
+                <label htmlFor="password">Senha</label>
                 <input type="password" name="password" id="password" 
                       placeholder="Password" className="form-control" 
                       value={this.state.password} onChange={this.handleChange.bind(this)}/>
               </div>
-              <div className="form-group"><Link to="/forgot"><strong>Forgot your password?</strong></Link></div>
-              <button type="submit" className="btn btn-success">Log in</button>
+              <div className="form-group"><Link to="/forgot"><strong>Esqueceu sua senha?</strong></Link></div>
+              <button type="submit" className="btn btn-success">Entrar!</button>
             </form>
-            <div className="hr-title"><span>or</span></div>
+            <div className="hr-title"><span>ou</span></div>
             <div className="btn-toolbar text-center">
-        <button onClick={this.handleFacebook.bind(this)} className="btn btn-facebook">Sign in with Facebook</button>
-        <button onClick={this.handleTwitter.bind(this)} className="btn btn-twitter">Sign in with Twitter</button>
-        <button onClick={this.handleGoogle.bind(this)} className="btn btn-google">Sign in with Google</button>
+        <button onClick={this.handleFacebook.bind(this)} className="btn btn-facebook">Entre com Facebook</button>
+        <button onClick={this.handleTwitter.bind(this)} className="btn btn-twitter">Entre com Twitter</button>
+        <button onClick={this.handleGoogle.bind(this)} className="btn btn-google">Entre com Google</button>
             </div>
           </div>
         </div>
         <p className="text-center">
-          Don't have an account? <Link to="/signup"><strong>Sign up</strong></Link>
+          Não tenha uma conta? <Link to="/signup"><strong>Cadastre-se!</strong></Link>
         </p>
       </div>
     );
