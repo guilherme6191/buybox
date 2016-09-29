@@ -9,7 +9,9 @@ Belo Horizonte, Brasil.
 
 
 
-*-------------------------------------------*
-application's privacy policy
+-------------------------------------------
+
+
+*Application's privacy policy*
 
 This app won't publish or sell your data in any circunstances.
