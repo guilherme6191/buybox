@@ -4,7 +4,7 @@ class UserHome extends React.Component {
     render(){
         return (
             <div className="sidebar">
-                <h1> UserHome Danado! </h1>
+                <h1> UserHome! </h1>
             </div>
         );
     }
