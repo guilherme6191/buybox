@@ -32,14 +32,6 @@ class Signup extends React.Component {
     this.props.dispatch(googleLogin())
   }
 
-  handleVk() {
-    this.props.dispatch(vkLogin())
-  }
-
-  handleGithub() {
-    this.props.dispatch(githubLogin())
-  }
-
   render() {
     return (
       <div className="login-container container">

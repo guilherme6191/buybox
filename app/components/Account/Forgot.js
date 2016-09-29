@@ -1,7 +1,9 @@
 import React from 'react';
 import { connect } from 'react-redux'
 import { forgotPassword } from '../../actions/auth';
+import { sendMessage } from '../../actions/messages';
 import Messages from '../Messages';
+import  { browserHistory } from 'react-router';
 
 class Forgot extends React.Component {
   constructor(props) {
@@ -14,6 +16,7 @@ class Forgot extends React.Component {
   }
 
   handleForgot(event) {
+    debugger;
     event.preventDefault();
     this.props.dispatch(forgotPassword(this.state.email));
   }
@@ -25,7 +28,7 @@ class Forgot extends React.Component {
           <div className="panel-body">
             <Messages messages={this.props.messages} />
             <form onSubmit={this.handleForgot.bind(this)}>
-              <legend>Esqueci a senha</legend>
+              <legend>Esqueci a senha :/</legend>
               <div className="form-group">
                 <p>Insira seu email abaixo e enviaremos instruções.</p>
                 <label htmlFor="email">Email</label>
