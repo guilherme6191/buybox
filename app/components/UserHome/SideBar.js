@@ -3,7 +3,7 @@ import { browserHistory } from 'react-router';
 
 const SideBar = () => {
     const goToAdd = () => {
-        browserHistory.push('/userhome/addAlert');
+        browserHistory.push('/addAlert');
     };
     return (
         <nav className="col-sm-4 col-md-2">
