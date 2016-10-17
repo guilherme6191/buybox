@@ -1,7 +1,7 @@
 import { combineReducers } from 'redux';
 import messages from './messages';
 import auth from './auth';
-import { reducer as form } from 'redux-form';
+import form from './form';
 
 export default combineReducers({
     messages,

@@ -39,7 +39,7 @@ class Login extends React.Component {
           <div className="panel-body">
             <Messages messages={this.props.messages}/>
             <form onSubmit={this.handleLogin.bind(this)}>
-              <legend>Log In</legend>
+              <legend>Entrar</legend>
               <div className="form-group">
                 <label htmlFor="email">Email</label>
                 <input type="email" name="email" id="email" 
