@@ -22,7 +22,7 @@ export function login(email, password) {
                         token: json.token,
                         user: json.user
                     });
-                    cookie.save('token', json.token, { expires: moment().add(1, 'hour').toDate() });
+                    cookie.save('token', json.token, { expires: moment().add(5, 'hour').toDate() });
                     browserHistory.push('/');
                 });
             } else {

@@ -4,6 +4,7 @@ import App from './components/App';
 import Home from './components/Home';
 import UserHome from './components/UserHome/UserHome';
 import AddAlert from './components/UserHome/AddAlert';
+import AlertForm from './components/UserHome/AlertForm';
 import Contact from './components/Contact';
 import NotFound from './components/NotFound';
 import Login from './components/Account/Login';
@@ -42,6 +43,7 @@ export default function getRoutes(store) {
 
             </Route>
             <Route path="/addAlert" component={AddAlert} onLeave={clearMessages}/>
+            <Route path="/alert/:id" component={AlertForm} onLeave={clearMessages}/>
             <Route path="*" component={NotFound} onLeave={clearMessages}/>
         </Route>
     );

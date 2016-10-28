@@ -30,6 +30,7 @@ var User = require('./models/User');
 
 // Controllers
 var userController = require('./controllers/user');
+var alertController = require('./controllers/alert');
 //var contactController = require('./controllers/contact');
 
 // React and Server-Side Rendering
@@ -41,9 +42,9 @@ var app = express();
 var compiler = webpack(config);
 
 mongoose.connect(process.env.MONGODB);
-mongoose.connection.on('error', function() {
-  console.log('MongoDB Connection Error. Please make sure that MongoDB is running.');
-  process.exit(1);
+mongoose.connection.on('error', function () {
+    console.log('MongoDB Connection Error. Please make sure that MongoDB is running.');
+    process.exit(1);
 });
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
@@ -57,33 +58,33 @@ app.use(expressValidator());
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use(function(req, res, next) {
-  req.isAuthenticated = function() {
-    var token = (req.headers.authorization && req.headers.authorization.split(' ')[1]) || req.cookies.token;
-    try {
-      return jwt.verify(token, process.env.TOKEN_SECRET);
-    } catch (err) {
-      return false;
-    }
-  };
+app.use(function (req, res, next) {
+    req.isAuthenticated = function () {
+        var token = (req.headers.authorization && req.headers.authorization.split(' ')[1]) || req.cookies.token;
+        try {
+            return jwt.verify(token, process.env.TOKEN_SECRET);
+        } catch (err) {
+            return false;
+        }
+    };
 
-  if (req.isAuthenticated()) {
-    var payload = req.isAuthenticated();
-    User.findById(payload.sub, function(err, user) {
-      req.user = user;
-      next();
-    });
-  } else {
-    next();
-  }
+    if (req.isAuthenticated()) {
+        var payload = req.isAuthenticated();
+        User.findById(payload.sub, function (err, user) {
+            req.user = user;
+            next();
+        });
+    } else {
+        next();
+    }
 });
 
 if (app.get('env') === 'development') {
-  app.use(require('webpack-dev-middleware')(compiler, {
-    noInfo: true,
-    publicPath: config.output.publicPath
-  }));
-  app.use(require('webpack-hot-middleware')(compiler));
+    app.use(require('webpack-dev-middleware')(compiler, {
+        noInfo: true,
+        publicPath: config.output.publicPath
+    }));
+    app.use(require('webpack-hot-middleware')(compiler));
 }
 
 //app.post('/contact', contactController.contactPost);
@@ -101,44 +102,49 @@ app.get('/auth/google/callback', userController.authGoogleCallback);
 app.post('/auth/twitter', userController.authTwitter);
 app.get('/auth/twitter/callback', userController.authTwitterCallback);
 
+app.post('/alerts/add', userController.ensureAuthenticated, alertController.alertPost);
+app.post('/alerts', userController.ensureAuthenticated, alertController.alertGetAll);
+app.get('/alert/:id', userController.ensureAuthenticated, alertController.alertGetOne);
+app.delete('/alert/:id', userController.ensureAuthenticated, alertController.alertDelete);
+
 // React server rendering
-app.use(function(req, res) {
-  var initialState = {
-    auth: { token: req.cookies.token, user: req.user },
-    messages: {}
-  };
+app.use(function (req, res) {
+    var initialState = {
+        auth: { token: req.cookies.token, user: req.user },
+        messages: {}
+    };
 
-  var store = configureStore(initialState);
+    var store = configureStore(initialState);
 
-  Router.match({ routes: routes.default(store), location: req.url }, function(err, redirectLocation, renderProps) {
-    if (err) {
-      res.status(500).send(err.message);
-    } else if (redirectLocation) {
-      res.status(302).redirect(redirectLocation.pathname + redirectLocation.search);
-    } else if (renderProps) {
-      var html = ReactDOM.renderToString(React.createElement(Provider, { store: store },
-        React.createElement(Router.RouterContext, renderProps)
-      ));
-      res.render('layout', {
-        html: html,
-        initialState: store.getState()
-      });
-    } else {
-      res.sendStatus(404);
-    }
-  });
+    Router.match({ routes: routes.default(store), location: req.url }, function (err, redirectLocation, renderProps) {
+        if (err) {
+            res.status(500).send(err.message);
+        } else if (redirectLocation) {
+            res.status(302).redirect(redirectLocation.pathname + redirectLocation.search);
+        } else if (renderProps) {
+            var html = ReactDOM.renderToString(React.createElement(Provider, { store: store },
+                React.createElement(Router.RouterContext, renderProps)
+            ));
+            res.render('layout', {
+                html: html,
+                initialState: store.getState()
+            });
+        } else {
+            res.sendStatus(404);
+        }
+    });
 });
 
 // Production error handler
 if (app.get('env') === 'production') {
-  app.use(function(err, req, res, next) {
-    console.error(err.stack);
-    res.sendStatus(err.status || 500);
-  });
+    app.use(function (err, req, res, next) {
+        console.error(err.stack);
+        res.sendStatus(err.status || 500);
+    });
 }
 
-app.listen(app.get('port'), function() {
-  console.log('Express server listening on port ' + app.get('port'));
+app.listen(app.get('port'), function () {
+    console.log('Express server listening on port ' + app.get('port'));
 });
 
 module.exports = app;

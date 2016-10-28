@@ -43,15 +43,8 @@ class Profile extends React.Component {
             <div className="container">
                 <div className="panel">
                     <div className="panel-body">
-                        <Messages messages={this.props.messages}/>
                         <form onSubmit={this.handleProfileUpdate.bind(this)} className="form-horizontal">
                             <legend>Informações do Perfil</legend>
-                            <div className="form-group">
-                                <label className="col-sm-3">Gravatar</label>
-                                <div className="col-sm-4">
-                                    <img src={this.state.gravatar} width="100" height="100" className="profile"/>
-                                </div>
-                            </div>
                             <div className="form-group">
                                 <label htmlFor="email" className="col-sm-3">Email</label>
                                 <div className="col-sm-7">
@@ -106,7 +99,7 @@ class Profile extends React.Component {
                 <div className="panel">
                     <div className="panel-body">
                         <form onSubmit={this.handleChangePassword.bind(this)} className="form-horizontal">
-                            <legend>Change Password</legend>
+                            <legend>Alterar Senha</legend>
                             <div className="form-group">
                                 <label htmlFor="password" className="col-sm-3">Nova Senha</label>
                                 <div className="col-sm-7">
@@ -132,7 +125,7 @@ class Profile extends React.Component {
                 <div className="panel">
                     <div className="panel-body">
                         <form onSubmit={this.handleDeleteAccount.bind(this)} className="form-horizontal">
-                            <legend>Delete Account</legend>
+                            <legend>Excluir Conta</legend>
                             <div className="form-group">
                                 <p className="col-sm-offset-3 col-sm-9">Você pode excluir sua conta, mas lembre-se que
                                     esta ação
@@ -154,8 +147,7 @@ class Profile extends React.Component {
 const mapStateToProps = (state) => {
     return {
         token: state.auth.token,
-        user: state.auth.user,
-        messages: state.messages
+        user: state.auth.user
     };
 };
 
