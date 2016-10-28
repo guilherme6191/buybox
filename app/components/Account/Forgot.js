@@ -6,47 +6,41 @@ import Messages from '../Messages';
 import  { browserHistory } from 'react-router';
 
 class Forgot extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = { email: '' };
-  }
+    constructor(props) {
+        super(props);
+        this.state = { email: '' };
+    }
 
-  handleChange(event) {
-    this.setState({ [event.target.name]: event.target.value });
-  }
+    handleChange(event) {
+        this.setState({ [event.target.name]: event.target.value });
+    }
 
-  handleForgot(event) {
-    debugger;
-    event.preventDefault();
-    this.props.dispatch(forgotPassword(this.state.email));
-  }
+    handleForgot(event) {
+        debugger;
+        event.preventDefault();
+        this.props.dispatch(forgotPassword(this.state.email));
+    }
 
-  render() {
-    return (
-      <div className="container">
-        <div className="panel">
-          <div className="panel-body">
-            <Messages messages={this.props.messages} />
-            <form onSubmit={this.handleForgot.bind(this)}>
-              <legend>Esqueci a senha :/</legend>
-              <div className="form-group">
-                <p>Insira seu email abaixo e enviaremos instruções.</p>
-                <label htmlFor="email">Email</label>
-                <input type="email" name="email" id="email" placeholder="Email" className="form-control" autoFocus value={this.state.email} onChange={this.handleChange.bind(this)}/>
-              </div>
-              <button type="submit" className="btn btn-success">Restaurar senha!</button>
-            </form>
-          </div>
-        </div>
-      </div>
-    );
-  }
+    render() {
+        return (
+            <div className="container">
+                <div className="panel">
+                    <div className="panel-body">
+                        <form onSubmit={this.handleForgot.bind(this)}>
+                            <legend>Esqueci a senha :/</legend>
+                            <div className="form-group">
+                                <p>Insira seu email abaixo e enviaremos instruções.</p>
+                                <label htmlFor="email">Email</label>
+                                <input type="email" name="email" id="email" placeholder="Email" className="form-control"
+                                       autoFocus value={this.state.email} onChange={this.handleChange.bind(this)}/>
+                            </div>
+                            <button type="submit" className="btn btn-success">Restaurar senha!</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        );
+    }
 }
 
-const mapStateToProps = (state) => {
-  return {
-    messages: state.messages
-  };
-};
-
-export default connect(mapStateToProps)(Forgot);
+export default connect()(Forgot);

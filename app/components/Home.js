@@ -48,7 +48,6 @@ class Home extends React.Component {
         );
         return (
             <div className="container-fluid">
-                <Messages messages={this.props.messages}/>
                 {home}
             </div>
         );

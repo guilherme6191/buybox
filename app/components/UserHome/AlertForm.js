@@ -158,7 +158,7 @@ class AlertForm extends React.Component {
                 </div>
                 <div className="form-group col-sm-12">
                     <button type="submit" className="btn btn-success">
-                        Submit
+                        Enviar
                     </button>
                     <button type="button" className="btn btn-default" onClick={this.back}>
                         Cancelar

@@ -40,7 +40,7 @@ exports.ensureAuthenticated = function (req, res, next) {
  * Sign in with email and password
  */
 exports.loginPost = function (req, res, next) {
-    req.assert('email', 'Email inválido').isEmail();
+    req.assert('email', 'Dados inválidos.').isEmail();
     req.assert('email', 'Email não pode estar em branco.').notEmpty();
     req.assert('password', 'Senha não pode estar em branco.').notEmpty();
     req.sanitize('email').normalizeEmail({ remove_dots: false });
@@ -53,11 +53,11 @@ exports.loginPost = function (req, res, next) {
 
     User.findOne({ email: req.body.email }, function (err, user) {
         if (!user) {
-            return res.status(401).send({ msg: 'Senha ou email inválidos.' });
+            return res.status(401).send({ msg: 'Dados inválidos.' });
         }
         user.comparePassword(req.body.password, function (err, isMatch) {
             if (!isMatch) {
-                return res.status(401).send({ msg: 'Senha ou email inválidos.' });
+                return res.status(401).send({ msg: 'Dados inválidos.' });
             }
             res.send({ token: generateToken(user), user: user.toJSON() });
         });
@@ -69,7 +69,7 @@ exports.loginPost = function (req, res, next) {
  */
 exports.signupPost = function (req, res, next) {
     req.assert('name', 'Name não pode estar em branco.').notEmpty();
-    req.assert('email', 'Email inválido').isEmail();
+    req.assert('email', 'Dados inválidos.').isEmail();
     req.assert('email', 'Email não pode estar em branco.').notEmpty();
     req.assert('password', 'senha deve ter pelo menos 4 caracteres').len(4);
     req.sanitize('email').normalizeEmail({ remove_dots: false });
@@ -105,7 +105,7 @@ exports.accountPut = function (req, res, next) {
         req.assert('password', 'Senha deve ter pelo menos 4 caracteres').len(4);
         req.assert('confirm', 'Senha deve ser válida').equals(req.body.password);
     } else {
-        req.assert('email', 'Email inválido').isEmail();
+        req.assert('email', 'Dados inválidos.').isEmail();
         req.assert('email', 'Email não pode estar em branco.').notEmpty();
         req.sanitize('email').normalizeEmail({ remove_dots: false });
     }
@@ -181,7 +181,7 @@ exports.unlink = function (req, res, next) {
  * POST /forgot
  */
 exports.forgotPost = function (req, res, next) {
-    req.assert('email', 'Email inválido').isEmail();
+    req.assert('email', 'Dados inválidos.').isEmail();
     req.assert('email', 'Email não pode estar em branco.').notEmpty();
     req.sanitize('email').normalizeEmail({ remove_dots: false });
 

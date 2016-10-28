@@ -54,9 +54,6 @@ class AlertList extends React.Component {
             ) : <h4>Não há alertas cadastrados.</h4>;
         return (
             <div className="col-sm-10">
-                <div className="row">
-                    <Messages messages={this.props.messages}/>
-                </div>
                 <ul className="list-group" style={{marginLeft: '5%'}}>
                     { this.state.ready ? alerts : 'Carregando...'  }
                 </ul>
@@ -68,8 +65,7 @@ class AlertList extends React.Component {
 const mapStateToProps = (state) => {
     return {
         token: state.auth.token,
-        user: state.auth.user,
-        messages: state.messages
+        user: state.auth.user
     }
 };
 
