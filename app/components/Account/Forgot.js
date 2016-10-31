@@ -16,9 +16,9 @@ class Forgot extends React.Component {
     }
 
     handleForgot(event) {
-        debugger;
         event.preventDefault();
         this.props.dispatch(forgotPassword(this.state.email));
+        this.setState({ email: '' });
     }
 
     render() {
