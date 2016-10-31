@@ -163,6 +163,10 @@ export function updateProfile(state, token) {
                         type: 'UPDATE_PROFILE_SUCCESS',
                         messages: [json]
                     });
+                    dispatch({
+                        type: 'PROFILE_UPDATED',
+                        user: state
+                    })
                 });
             } else {
                 return response.json().then((json) => {
