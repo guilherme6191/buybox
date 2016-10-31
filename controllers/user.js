@@ -211,8 +211,14 @@ exports.forgotPost = function (req, res, next) {
             });
         },
         function (token, user, done) {
-            var nodemailerMailgun = nodemailer.createTransport(mg(mailAuth));
-            nodemailerMailgun.sendMail({
+            var transporter = nodemailer.createTransport({
+                service: 'Gmail',
+                auth: {
+                    user: process.env.GMAIL_MAIL, // Your email id
+                    pass: process.env.GMAIL_PASS // Your password
+                }
+            });
+            transporter.sendMail({
                 from: 'postmaster@sandbox2ba027822c204b4383da167aaabef499.mailgun.org',
                 to: user.email,
                 subject: '✔ Reinicia sua senha para o BuyBox!',
@@ -225,7 +231,7 @@ exports.forgotPost = function (req, res, next) {
                 }
                 else {
                     console.log('Response: ' + info);
-                    res.status(200).send();
+                    res.status(200).send({ msg: 'Favor checar seu email, inclusive caixa de Spam, para continuar com o procedimento.' });
                 }
             });
         }
@@ -251,7 +257,7 @@ exports.resetPost = function (req, res, next) {
                 .where('passwordResetExpires').gt(Date.now())
                 .exec(function (err, user) {
                     if (!user) {
-                        return res.status(400).send({ msg: 'Password reset token is invalid or has expired.' });
+                        return res.status(400).send({ msg: 'Token da senha inválido ou expirado.' });
                     }
                     user.password = req.body.password;
                     user.passwordResetToken = undefined;
@@ -263,17 +269,17 @@ exports.resetPost = function (req, res, next) {
         },
         function (user, done) {
             var transporter = nodemailer.createTransport({
-                service: 'Mailgun',
+                service: 'Gmail',
                 auth: {
-                    user: process.env.MAILGUN_USERNAME,
-                    pass: process.env.MAILGUN_PASSWORD
+                    user: process.env.GMAIL_MAIL,
+                    pass: process.env.GMAIL_PASS // Your password
                 }
             });
             var mailOptions = {
                 from: 'support@yourdomain.com',
                 to: user.email,
                 subject: 'Sua senha BuyBox foi alterada!',
-                text: 'Hello,\n\n' +
+                text: 'Olá,\n\n' +
                 'Essa é uma confirmação que sua senha para o email ' + user.email + ' foi alterada.\n'
             };
             transporter.sendMail(mailOptions, function (err) {
@@ -484,8 +490,10 @@ exports.authTwitter = function (req, res) {
                 if (req.isAuthenticated()) {
                     User.findOne({ twitter: profile.id }, function (err, user) {
                         if (user) {
-                            return res.status(409).send({ msg: 'Já existe uma conta associada com Twitter ' +
-                            'que pertence a você.' });
+                            return res.status(409).send({
+                                msg: 'Já existe uma conta associada com Twitter ' +
+                                'que pertence a você.'
+                            });
                         }
                         user = req.user;
                         user.name = user.name || profile.name;

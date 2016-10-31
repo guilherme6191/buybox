@@ -91,7 +91,6 @@ export function forgotPassword(email) {
                         type: 'FORGOT_PASSWORD_SUCCESS',
                         messages: [json]
                     });
-                    browserHistory.push('/');
                 });
             } else {
                 return response.json().then((json) => {
