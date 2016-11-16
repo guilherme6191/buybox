@@ -39,11 +39,6 @@ class AlertList extends React.Component {
             ready: true,
             alerts: this.state.alerts.filter(item => item._id != id)
         });
-
-        fetch('/alert/' + id, {
-            method: 'delete',
-            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${this.props.token}` }
-        });
         this.props.dispatch(deleteAlert(this.props.token, id))
     }
 

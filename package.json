@@ -1,7 +1,7 @@
 {
-  "name": "wild-sky",
+  "name": "buybox",
   "version": "1.0.0",
-  "description": "My app description",
+  "description": "Buybox",
   "scripts": {
     "build": "webpack --display-error-details",
     "deploy": "npm test && git push heroku master",

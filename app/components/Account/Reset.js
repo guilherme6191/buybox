@@ -24,7 +24,7 @@ class Reset extends React.Component {
                 <div className="panel">
                     <div className="panel-body">
                         <form onSubmit={this.handleReset.bind(this)}>
-                            <legend>Reset Password</legend>
+                            <legend>Restaurar senha</legend>
                             <div className="form-group">
                                 <label htmlFor="password">Nova senha</label>
                                 <input type="password" name="password" id="password" placeholder="New password"
