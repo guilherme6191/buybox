@@ -47,12 +47,18 @@ export function getAlerts(token, userId) {
     }
 }
 
-export function deleteAlert(token, alertId) {
+export function deleteAlert(token, id) {
     return (dispatch) => {
-        dispatch({
-            type: 'ALERT_DELETE_SUCCESS',
-            message: [{ msg: "Alerta excluído com sucesso." }]
+        fetch('/alert/' + id, {
+            method: 'delete',
+            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` }
+        }).then((response) => {
+            if (response.ok) {
+                return dispatch({
+                    type: 'ALERT_DELETE_SUCCESS',
+                    messages: [{ msg: "Alerta excluído com sucesso." }]
+                });
+            }
         });
     }
-
 }

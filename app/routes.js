@@ -21,7 +21,7 @@ export default function getRoutes(store) {
     };
     const skipIfAuthenticated = (nextState, replace) => {
         if (store.getState().auth.token) {
-            replace('/');
+            replace('/userHome');
         }
     };
     const clearMessages = () => {
@@ -31,7 +31,7 @@ export default function getRoutes(store) {
     };
     return (
         <Route path="/" component={App}>
-            <IndexRoute component={Home} onLeave={clearMessages}/>
+            <IndexRoute component={Home} onEnter={skipIfAuthenticated} onLeave={clearMessages}/>
             <Route path="/contact" component={Contact} onLeave={clearMessages}/>
             <Route path="/login" component={Login} onEnter={skipIfAuthenticated} onLeave={clearMessages}/>
             <Route path="/signup" component={Signup} onEnter={skipIfAuthenticated} onLeave={clearMessages}/>
@@ -39,8 +39,7 @@ export default function getRoutes(store) {
             <Route path="/forgot" component={Forgot} onEnter={skipIfAuthenticated} onLeave={clearMessages}/>
             <Route path='/reset/:token' component={Reset} onEnter={skipIfAuthenticated} onLeave={clearMessages}/>
             <Route path="/userhome">
-                <IndexRoute component={UserHome} />
-
+                <IndexRoute component={UserHome} onLeave={clearMessages}/>
             </Route>
             <Route path="/addAlert" component={AddAlert} onLeave={clearMessages}/>
             <Route path="/alert/:id" component={AlertForm} onLeave={clearMessages}/>

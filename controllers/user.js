@@ -128,11 +128,11 @@ exports.accountPut = function (req, res, next) {
         }
         user.save(function (err) {
             if ('password' in req.body) {
-                res.send({ msg: 'Your senha has been changed.' });
+                res.send({ msg: 'Your senha foi alterada com sucesso.' });
             } else if (err && err.code === 11000) {
                 res.status(409).send({ msg: 'O email inserido já está associado com outra conta.' });
             } else {
-                res.send({ user: user, msg: 'Perfil atualizado..' });
+                return res.status(200).send({ user: user, msg: 'Perfil atualizado.' });
             }
         });
     });
