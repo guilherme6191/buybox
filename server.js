@@ -18,6 +18,7 @@ var sass = require('node-sass-middleware');
 var webpack = require('webpack');
 var config = require('./webpack.config');
 var productCtrl = require('./controllers/product');
+var CronJob = require('cron').CronJob;
 
 // Load environment variables from .env file
 dotenv.load();
@@ -146,8 +147,12 @@ if (app.get('env') === 'production') {
 
 app.listen(app.get('port'), function () {
     console.log('Express server listening on port ' + app.get('port'));
-    productCtrl.getProducts();
 
+    //runs everyday at midnight: '0 0 0 * * *'
+    new CronJob('0 0 0 * * *', function() {
+        productCtrl.getProducts();
+
+    }, null, true, 'America/Sao_Paulo', null, true /* runs the job onInit */);
 });
 app.timeout = 5000;
 module.exports = app;
