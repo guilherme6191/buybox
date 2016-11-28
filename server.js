@@ -17,6 +17,7 @@ var request = require('request');
 var sass = require('node-sass-middleware');
 var webpack = require('webpack');
 var config = require('./webpack.config');
+var productCtrl = require('./controllers/product');
 
 // Load environment variables from .env file
 dotenv.load();
@@ -145,6 +146,8 @@ if (app.get('env') === 'production') {
 
 app.listen(app.get('port'), function () {
     console.log('Express server listening on port ' + app.get('port'));
-});
+    productCtrl.getProducts();
 
+});
+app.timeout = 5000;
 module.exports = app;

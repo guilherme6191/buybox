@@ -37,7 +37,7 @@ class AlertForm extends React.Component {
                 fields: {
                     alertName: '',
                     product: 'smartphone',
-                    ram: '512',
+                    ram: '1',
                     storage: '8',
                     dualChip: false,
                     rearCam: '4',
@@ -89,7 +89,6 @@ class AlertForm extends React.Component {
                     <div>
                         <select defaultValue={this.state.fields.ram} onChange={this.handleChange} name="ram"
                                 className="form-control">
-                            <option value="512MB">512MB</option>
                             <option value="1">1GB</option>
                             <option value="2">2GB</option>
                             <option value="4">4GB</option>
