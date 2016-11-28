@@ -1,15 +1,29 @@
 var mongoose = require('mongoose');
 
+var productSchema = new mongoose.Schema({
+    rate: Number,
+    url: String, //buscape
+    productName: String,
+    price: String, //buscape
+    ram: Number, //fono
+    frontCam: Number, //fono (secondary)
+    rearCam: Number, //fono (primary)
+    storage: Number, //fono
+    dualChip: Boolean, //buscape
+    isMatch: Boolean
+});
+
 var alertPriceSchema = new mongoose.Schema({
     userId: String,
     alertName: String,
     price: String,
-    ram: String,
-    frontCam: String,
-    rearCam: String,
-    storage: String,
+    ram: Number,
+    frontCam: Number,
+    rearCam: Number,
+    storage: Number,
     dualChip: Boolean,
-    product: String
+    product: String,
+    products: [productSchema]
 });
 
 var Alert = mongoose.model('Alert', alertPriceSchema);

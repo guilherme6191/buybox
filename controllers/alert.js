@@ -1,6 +1,6 @@
 var request = require('request');
 var Alert = require('../models/Alert');
-
+var ProductCtrl = require('./product');
 
 exports.alertGetOne = function (req, res, next) {
 
@@ -52,9 +52,6 @@ exports.alertDelete = function (req, res, next) {
  */
 exports.alertPost = function (req, res, next) {
 
-    //req.assert('fields.price', 'Preço não pode estar em branco.').notEmpty();
-    //req.assert('fields.nameAlert', 'Nome do Alerta não pode estar em branco.').notEmpty();
-
     var errors = req.validationErrors();
 
     if (errors) {
@@ -71,6 +68,7 @@ exports.alertPost = function (req, res, next) {
             alert.rearCam = req.body.fields.rearCam;
             alert.storage = req.body.fields.storage;
             alert.dualChip = req.body.fields.dualChip === "true";
+            alert.products = [];
 
             alert.save(function (err) {
                 if (err && err.code) {
@@ -79,7 +77,7 @@ exports.alertPost = function (req, res, next) {
                         'Por favor, tente mais tarde!'
                     });
                 } else {
-                    res.status(200).send({ alert });
+                    res.status(206).send({ alert });
                 }
             })
         });
@@ -95,7 +93,8 @@ exports.alertPost = function (req, res, next) {
                 rearCam: parseInt(req.body.fields.rearCam),
                 storage: parseInt(req.body.fields.storage),
                 dualChip: req.body.fields.dualChip === "true",
-                product: req.body.fields.product
+                product: req.body.fields.product,
+                products: []
             }
         );
 
@@ -103,10 +102,8 @@ exports.alertPost = function (req, res, next) {
             if (err && err.code) {
                 res.status(500).send({ msg: 'Falha na inserção do Alerta de Preços. Por favor, tente mais tarde!' });
             } else {
-                res.status(200).send({ alert });
+                res.status(206).send({ alert });
             }
         })
     }
-
-
 };
