@@ -16,7 +16,8 @@ class AlertItem extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            isProductsShown: false
+            isProductsShown: false,
+            isThereMatch: this.props.products.some(p => p.isMatch)
         };
 
         this.goToAlert = this.goToAlert.bind(this);
@@ -45,14 +46,16 @@ class AlertItem extends React.Component {
 
         const productsList = this.state.isProductsShown && this.props.products && this.props.products.length > 0 &&
             this.props.products
-                .map(p => <li key={p._id} style={{  }}>
+                .map(p => <li key={p._id}>
                     <b>{p.productName}</b> a partir de <b>{p.price}</b>!
                     <a href={p.url}> &nbsp; &nbsp; Comprar</a>
                 </li>);
 
         return (
-            <li key={this.props._id} className="list-group-item">
-                <div className="row" style={{ marginLeft: '1%' }}>
+            <li key={this.props._id} className="list-group-item"
+                style={{ backgroundColor: this.state.isThereMatch && 'aquamarine'}}>
+                <div className="row"
+                     style={{ marginLeft: '1%' }}>
                     <div style={{ float: "left", marginTop: "0.8%" }}>
                         <span >{this.props.alertName}</span>
                     </div>

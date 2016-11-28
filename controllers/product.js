@@ -3,24 +3,56 @@ var fonoapi = require('../node_modules/fonoapi-nodejs/index');
 fonoapi.token = '80b626281202215436ec1c802324e6ac647560bd13a88dbd';
 var Alert = require('../models/Alert');
 var async = require('async');
+var nodemailer = require('nodemailer');
+var User = require('../models/User');
 
-exports.getProducts = function () {
-    console.log('teste');
-
+exports.getProducts = function (alert) {
+    console.log("Process starting...")
     async.waterfall([
-        function (callback) {
-            Alert.findById('583a1c23067e3a6e0b185504', function (err, alert) {
-                callback(null, alert);
-            })
+        function (waterfallCallback) {
+            if (alert) {
+                Alert.findById(alert._id, function (err, alert) {
+                    waterfallCallback(null, [alert]);
+                })
+            } else {
+                Alert.find({}, function (err, alert) {
+                    waterfallCallback(null, alert)
+                })
+            }
         },
-        function (alert, callback) {
-            getBuscapeProducts(alert, callback);
+        function (alerts, waterfallCallback) {
+            console.log("Starting to get buscape products.");
+            getBuscapeProducts(alerts, waterfallCallback);
+            console.log("Done getting buscape products.");
         },
-        function (filteredList, alert, callback) {
-            getFonoApiAndCompare(filteredList, alert, callback);
-        },
-        function (specReadyList, alert, callback) {
-            saveProductList(specReadyList, alert, callback)
+        function (alerts, buscapeList, waterfallCallback) {
+            async.eachSeries(alerts,
+                function (alert, eachCallback) {
+                    async.waterfall([
+                            function (waterfallCallback) {
+                                getFonoApiAndCompare(buscapeList, alert, waterfallCallback);
+                                console.log("Comparing with specs from fonoApi for alert: " + alert.alertName);
+                            },
+                            function (specReadyList, alert, waterfallCallback) {
+                                saveProductList(specReadyList, alert, waterfallCallback);
+                                console.log("Saving matches, if any was found for alert: " + alert.alertName);
+                            }],
+                        function (err) {
+                            if (err) {
+                                console.log(err)
+                            } else {
+                                eachCallback()
+                            }
+                        });
+                },
+
+                function done(err) {
+                    if (err) {
+                        console.log(err)
+                    } else {
+                        waterfallCallback();
+                    }
+                });
 
         }
     ], function (err) {
@@ -28,18 +60,27 @@ exports.getProducts = function () {
     });
 };
 
-function getFonoApiAndCompare(filteredList, alert, callback) {
+function getFonoApiAndCompare(buscapeList, alert, callback) {
 
-    console.log(filteredList.length);
-    var x = 0;
     var resultSpecList = [];
-    async.eachSeries(filteredList,
+    //preFilter our list
+    buscapeList = buscapeList
+        .filter(function (elem) {
+            return preFilter(elem, alert);
+        });
+
+    async.eachSeries(buscapeList,
         function (buscape, eachSeriesCallback) {
-            console.log(x++);
+
             var name = buscape.product.productshortname.split(' ')[1];
             var brand = buscape.product.productshortname.split(' ')[0];
 
-            fonoapi.getDevices(handleFonoAndCompare, name, brand);
+            try {
+                fonoapi.getDevices(handleFonoAndCompare, name, brand);
+            } catch (e) {
+                console.log(e);
+                eachSeriesCallback(null, alert, undefined)
+            }
 
             function handleFonoAndCompare(queryString, data) {
                 if (!data || !Array.isArray(data) || (data.status && !(data.status === 'error'))) {
@@ -60,55 +101,55 @@ function getFonoApiAndCompare(filteredList, alert, callback) {
 
         },
         function done(err) {
-            var matchSpecList = resultSpecList.filter(function (elem) {
-                return elem.rate === 4;
-            });
+            var matchSpecList = resultSpecList
+                .filter(function (elem) {
+                    return elem && elem.rate === 4;
+                });
 
             callback(null, matchSpecList.sort(function (a, b) {
                 return parseFloat(a.price) - parseFloat(b.price);
-            }).slice(0, 2), alert);
+            }).slice(0, 3), alert);
         });
 }
 
-function getBuscapeProducts(alert, callback) {
+function getBuscapeProducts(alerts, callback) {
 
     var url =
         process.env.FIND_PRODUCTS_URL + '&results=100';
     request(url, function (err, response, body) {
-
         if (!err && response.statusCode == 200) {
-            var list = JSON.parse(body);
-            callback(null, list.product
-                .filter(function (elem) {
-                    return preFilter(elem, alert);
-                }), alert);
+            var result = JSON.parse(body);
+            callback(null, alerts, result.product);
+        } else {
+            console.log(err)
         }
     });
-
-    /**
-     * makes a pre filter, returning true for the objs that passes the first conditions
-     * @param elem
-     * @param alert
-     * @returns {*}
-     */
-    function preFilter(elem, alert) {
-        if (!elem.product || !elem.product.specification || !elem.product.specification.item) {
-            return false
-        } // if there is no complete specs info, discard for now
-
-        var specs = elem.product.specification.item;
-        return specs.every(function (elem) {
-            if (elem.item.label === 'Chips' && alert.dualChip && elem.item.value[0] !== 'Dual Chip') {
-                return false;
-            }
-            else if (elem.item.label === 'Câmera Traseira'
-                && elem.item.value[0].substring(0, 2) < alert.rearCam) {
-                return false;
-            }
-            return true;
-        });
-    }
 }
+
+/**
+ * makes a pre filter, returning true for the objs that passes the first conditions
+ * @param elem
+ * @param alert
+ * @returns {*}
+ */
+function preFilter(elem, alert) {
+    if (!elem.product || !elem.product.specification || !elem.product.specification.item) {
+        return false
+    } // if there is no complete specs info, discard for now
+
+    var specs = elem.product.specification.item;
+    return specs.every(function (elem) {
+        if (elem.item.label === 'Chips' && alert.dualChip && elem.item.value[0] !== 'Dual Chip') {
+            return false;
+        }
+        else if (elem.item.label === 'Câmera Traseira'
+            && elem.item.value[0].substring(0, 2) < alert.rearCam) {
+            return false;
+        }
+        return true;
+    });
+}
+
 
 /**
  * Updates alert with the best products found
@@ -119,7 +160,7 @@ function getBuscapeProducts(alert, callback) {
  */
 function saveProductList(list, alert, callback) {
 
-    if (list.length <= 3) { //make sure max 3 to show up in FE
+    if (list && list.length <= 3) { //make sure max 3 to show up in FE
 
         alert.products = [];
         alert.products = list.map(function (readyProd) {
@@ -142,10 +183,47 @@ function saveProductList(list, alert, callback) {
                 alert.products = [];
                 callback(alert);
             } else {
-                callback(alert);
+                User.findOne({ _id: alert.userId }, function (err, user) {
+                    if (!err) {
+                        alert.products.map(function (p) {
+                            if (p.isMatch) {
+                                sendMatchEmail(p, user, alert);
+                            }
+                        });
+                    }
+                });
+
+                callback(null, alert);
             }
         });
+    } else {
+        callback(null, alert)
     }
+
+}
+
+function sendMatchEmail(product, user, alert) {
+    var transporter = nodemailer.createTransport({
+        service: 'Gmail',
+        auth: {
+            user: process.env.GMAIL_MAIL, // Your email id
+            pass: process.env.GMAIL_PASS // Your password
+        }
+    });
+    transporter.sendMail({
+        from: process.env.GMAIL_MAIL,
+        to: user.email,
+        subject: '✔ Encontramos Match(es) para seu alerta de preço ' + alert.alertName + '!',
+        text: 'Vá direto para a página do buscapé do produto e faça sua compra:\n\n' +
+        'Link: http://localhost:3000/userHome ' +
+        '\n'
+    }, function (err, info) {
+        if (err) {
+            console.log('Error: ' + err);
+        } else {
+            console.log('Match email sent to: ' + user.email + ' for alert: ' + alert.alertName);
+        }
+    });
 }
 
 
