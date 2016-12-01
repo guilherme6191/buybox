@@ -49,7 +49,7 @@ class AlertList extends React.Component {
             ) : <h4>Não há alertas cadastrados.</h4>;
         return (
             <div className="col-sm-10">
-                <ul className="list-group" style={{marginLeft: '5%'}}>
+                <ul className="list-group" style={{marginLeft: '2%'}}>
                     { this.state.ready ? alerts : 'Carregando...'  }
                 </ul>
             </div>

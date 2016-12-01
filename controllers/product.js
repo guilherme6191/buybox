@@ -7,7 +7,7 @@ var nodemailer = require('nodemailer');
 var User = require('../models/User');
 
 exports.getProducts = function (alert) {
-    console.log("Process starting...")
+    console.log("Process starting...");
     async.waterfall([
         function (waterfallCallback) {
             if (alert) {
@@ -139,14 +139,12 @@ function preFilter(elem, alert) {
 
     var specs = elem.product.specification.item;
     return specs.every(function (elem) {
-        if (elem.item.label === 'Chips' && alert.dualChip && elem.item.value[0] !== 'Dual Chip') {
+        if (alert.dualChip && elem.item.label === 'Chips' && elem.item.value[0] !== 'Dual Chip') {
             return false;
         }
-        else if (elem.item.label === 'Câmera Traseira'
-            && elem.item.value[0].substring(0, 2) < alert.rearCam) {
-            return false;
+        else {
+            return true;
         }
-        return true;
     });
 }
 
@@ -214,7 +212,7 @@ function sendMatchEmail(product, user, alert) {
         from: process.env.GMAIL_MAIL,
         to: user.email,
         subject: '✔ Encontramos Match(es) para seu alerta de preço ' + alert.alertName + '!',
-        text: 'Vá direto para a página do buscapé do produto e faça sua compra:\n\n' +
+        text: 'Entre no buybox e veja os produtos e o(s) match(es):\n\n' +
         'Link: http://localhost:3000/userHome ' +
         '\n'
     }, function (err, info) {
