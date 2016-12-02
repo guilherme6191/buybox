@@ -9,7 +9,7 @@ const Contact = () => {
       <div className="panel">
         <div className="panel-heading">
           Caso queria entrar em contato, favor enviar email para  
-          <a href="mailto:gui.vasconcelos.21@gmail.com"> gui.vasconcelos.21@gmail.com</a>.
+          <a href="mailto:buyboxmail@gmail.com">buyboxmail@gmail.com</a>.
         </div>
       </div>
     </div>

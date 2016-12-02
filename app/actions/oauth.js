@@ -256,7 +256,7 @@ function signIn({ token, user, window, interval, dispatch }) {
             user: user
         });
         cookie.save('token', token, { expires: moment().add(1, 'hour').toDate() });
-        browserHistory.push('/');
+        browserHistory.push('/userHome');
         resolve({ window: window, interval: interval });
     });
 

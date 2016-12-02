@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router';
 import { browserHistory } from 'react-router';
+import Modal from '../Modal';
 
 const btnStyle = {
     marginRight: "1%"
@@ -54,7 +55,7 @@ class AlertItem extends React.Component {
         const productsList = this.state.isProductsShown && this.props.products && this.props.products.length > 0 &&
             this.props.products
                 .map(p =>
-                    <a href={p.url}>
+                    <a key={p.url + '' + p._id} href={p.url}>
                         <li key={p._id}
                             className="list-group-item"
                             style={{ color: p.isMatch && '#3c763d', backgroundColor: p.isMatch && '#dff0d8' }}>
@@ -73,8 +74,7 @@ class AlertItem extends React.Component {
                         <span>{this.props.alertName}</span>
                     </div>
                     {this.products()}
-                    <button onClick={() => {
-                        if(confirm('Tem certeza que deseja deletar este alerta?')){this.props.onDelete()}}}
+                    <button data-toggle="modal" data-target="#myModal"
                             className="btn btn-danger pull-right"
                             style={ btnStyle }>
                         Excluir
@@ -86,7 +86,35 @@ class AlertItem extends React.Component {
                 <ul style={{ backgroundColor: '#f4f4f4', padding: '0px' }}>
                     {productsList}
                 </ul>
+                <div id="myModal" className="modal fade" role="dialog">
+                    <div className="modal-dialog">
+                        <div className="modal-content">
+                            <div className="modal-header">
+                                <button type="button" className="close" data-dismiss="modal">&times;</button>
+                                <h4 className="modal-title">Tem certeza que deseja excluir este item?</h4>
+                            </div>
+                            <div className="modal-body">
+                                <p>Esta ação é definitiva.</p>
+                            </div>
+                            <div className="modal-footer">
+                                <button type="button"
+                                        className="btn btn-success"
+                                        onClick={this.props.onDelete}
+                                        data-dismiss="modal">
+                                    Confirmar
+                                </button>
+                                <button type="button"
+                                        className="btn btn-default"
+                                        data-dismiss="modal">
+                                    Cancelar
+                                </button>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
             </li>
+
         )
     }
 }
