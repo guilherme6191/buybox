@@ -48,16 +48,19 @@ class Header extends React.Component {
                         <button type="button" data-toggle="collapse" data-target="#navbar"
                                 className="navbar-toggle collapsed">
                             <span className="sr-only">Toggle navigation</span>
-                            <span className="icon-bar"></span>
-                            <span className="icon-bar"></span>
-                            <span className="icon-bar"></span>
+                            <span className="icon-bar" />
+                            <span className="icon-bar" />
+                            <span className="icon-bar" />
                         </button>
-                        <IndexLink to="/" className="navbar-brand">BuyBox</IndexLink>
+                        <IndexLink to="/" className="navbar-brand">
+                            <img src="../images/bbNameLogo.jpg" style={{marginTop: '-4px'}} width="120px" />
+                        </IndexLink>
                     </div>
                     <div id="navbar" className="navbar-collapse collapse">
                         <ul className="nav navbar-nav">
-                            <li><IndexLink to="/" activeStyle={active}>Home</IndexLink></li>
+                            <li><IndexLink to="/userHome" activeStyle={active}>Home</IndexLink></li>
                             <li><Link to="/contact" activeStyle={active}>Contato</Link></li>
+                            <li><Link to="/trends" activeStyle={active}>Precisando de ideias?</Link></li>
                         </ul>
                         <div style={ msgStyle }>
                             <Messages messages={this.props.messages}/>

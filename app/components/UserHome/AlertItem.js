@@ -12,6 +12,11 @@ const showProductsSpan = {
     marginLeft: '1%'
 };
 
+const alertNameContainer = {
+    float: "left",
+    marginTop: "0.8%"
+};
+
 class AlertItem extends React.Component {
     constructor(props) {
         super(props);
@@ -22,6 +27,7 @@ class AlertItem extends React.Component {
 
         this.goToAlert = this.goToAlert.bind(this);
         this.showProducts = this.showProducts.bind(this);
+        this.delete = this.delete.bind(this);
     }
 
     goToAlert() {
@@ -36,9 +42,17 @@ class AlertItem extends React.Component {
 
     products() {
         if (this.props.products.length > 0) {
-            return <a href="#" onClick={this.showProducts}>
-                <span style={showProductsSpan}>Temos produtos para este alerta!</span>
-            </a>
+            let matchText = this.state.isThereMatch && <span style={{color: 'red'}}>MATCH!</span>;
+
+            return (<a href="#" onClick={this.showProducts}>
+                <span style={showProductsSpan}>Temos produtos para este alerta! &nbsp;{matchText}</span>
+            </a>)
+        }
+    }
+
+    delete() {
+        if (confirm("Esta ação é definitiva.")) {
+            this.props.onDelete(this.props._id);
         }
     }
 
@@ -46,21 +60,28 @@ class AlertItem extends React.Component {
 
         const productsList = this.state.isProductsShown && this.props.products && this.props.products.length > 0 &&
             this.props.products
-                .map(p => <li key={p._id}>
-                    <b>{p.productName}</b> a partir de <b>{p.price}</b>!
-                    <a href={p.url}> &nbsp; &nbsp; Comprar</a>
-                </li>);
+                .map(p =>
+                    <a key={p.url + '' + p._id} href={p.url}>
+                        <li key={p._id}
+                            className="list-group-item"
+                            style={{ color: p.isMatch && '#3c763d', backgroundColor: p.isMatch && '#dff0d8' }}>
+                            <b>
+                                {p.productName}
+                            </b>
+                            <span className="badge">{p.price}</span>
+                        </li>
+                    </a>);
 
         return (
-            <li key={this.props._id} className="list-group-item"
-                style={{ backgroundColor: this.state.isThereMatch && 'aquamarine'}}>
+            <li key={this.props._id} className="list-group-item">
                 <div className="row"
-                     style={{ marginLeft: '1%' }}>
-                    <div style={{ float: "left", marginTop: "0.8%" }}>
-                        <span >{this.props.alertName}</span>
+                     style={{ marginLeft: '1%', marginRight: '1%' }}>
+                    <div style={alertNameContainer}>
+                        <span>{this.props.alertName}</span>
                     </div>
                     {this.products()}
-                    <button onClick={this.props.onDelete} className="btn btn-danger pull-right"
+                    <button onClick={this.delete}
+                            className="btn btn-danger pull-right"
                             style={ btnStyle }>
                         Excluir
                     </button>
@@ -68,10 +89,12 @@ class AlertItem extends React.Component {
                         Editar
                     </button>
                 </div>
-                <ul style={{ backgroundColor: '#f4f4f4' }}>
+                <ul style={{ backgroundColor: '#f4f4f4', padding: '0px' }}>
                     {productsList}
                 </ul>
+
             </li>
+
         )
     }
 }

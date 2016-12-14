@@ -255,8 +255,8 @@ function signIn({ token, user, window, interval, dispatch }) {
             token: token,
             user: user
         });
-        cookie.save('token', token, { expires: moment().add(1, 'hour').toDate() });
-        browserHistory.push('/');
+        cookie.save('token', token, { expires: moment().add(48, 'hour').toDate() });
+        browserHistory.push('/userHome');
         resolve({ window: window, interval: interval });
     });
 
