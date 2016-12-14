@@ -60,6 +60,7 @@ class Header extends React.Component {
                         <ul className="nav navbar-nav">
                             <li><IndexLink to="/userHome" activeStyle={active}>Home</IndexLink></li>
                             <li><Link to="/contact" activeStyle={active}>Contato</Link></li>
+                            <li><Link to="/trends" activeStyle={active}>Precisando de ideias?</Link></li>
                         </ul>
                         <div style={ msgStyle }>
                             <Messages messages={this.props.messages}/>

@@ -11,6 +11,7 @@ class AlertList extends React.Component {
         this.state = {
             ready: false
         };
+
         this.handleDelete = this.handleDelete.bind(this);
     }
 
@@ -45,7 +46,7 @@ class AlertList extends React.Component {
     render() {
         const alerts = this.state.alerts && this.state.alerts.length > 0 ?
             this.state.alerts.map(alert =>
-                <AlertItem key={alert._id} {...alert} onDelete={()=>this.handleDelete(alert._id)}/>
+                <AlertItem key={alert._id} {...alert} onDelete={this.handleDelete}/>
             ) : <h4>Não há alertas cadastrados.</h4>;
         return (
             <div className="col-sm-10">

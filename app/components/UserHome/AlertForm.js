@@ -64,7 +64,7 @@ class AlertForm extends React.Component {
 
     render() {
         const form = this.state.ready ?
-            (<div className="panel panel-body">
+            (<div className="container panel panel-body">
                     <form onSubmit={this.handleSubmit}>
                         <h3>Preencha os dados do produto que deseja comprar:</h3>
                         <div className="form-group col-sm-12">
@@ -168,7 +168,7 @@ class AlertForm extends React.Component {
                         </div>
                     </form>
                 </div>
-            ) : <span> Loading.. </span>;
+            ) : <div className="container panel panel-body"><span> Carregando... </span> </div>;
 
         return (
             <div>

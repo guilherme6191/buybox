@@ -148,11 +148,11 @@ if (app.get('env') === 'production') {
 app.listen(app.get('port'), function () {
     console.log('Express server listening on port ' + app.get('port'));
 
-    //runs everyday at midnight: '0 0 0 * * *'
+    //runs everyday at midnight: '0 0 0 * * *' sec min hours
     new CronJob('0 0 0 * * *', function() {
         productCtrl.getProducts();
 
-    }, null, true, 'America/Sao_Paulo', null, true /* runs the job onInit */);
+    }, null, true, 'America/Sao_Paulo', null, false /* runs the job onInit */);
 });
 app.timeout = 5000;
 module.exports = app;
