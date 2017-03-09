@@ -28,7 +28,6 @@ export function addAlert(fields, token, userId) {
 }
 
 export function getAlerts(token, userId) {
-
     return (dispatch) => {
         fetch('/alerts', {
             method: 'post',
@@ -38,8 +37,9 @@ export function getAlerts(token, userId) {
             if (response.ok) {
                 return response.json().then((json) => {
                     dispatch({
-                        type: 'LOAD_ALERTS',
-                        fields: json.alerts
+                        type: 'LOAD_ALERTS_SUCCESS',
+                        alerts: json.alerts,
+                        ready: true
                     });
                 });
             }
@@ -56,6 +56,8 @@ export function deleteAlert(token, id) {
             if (response.ok) {
                 return dispatch({
                     type: 'ALERT_DELETE_SUCCESS',
+                    deletedAlertId: id,
+                    ready: true,
                     messages: [{ msg: "Alerta excluído com sucesso." }]
                 });
             }
