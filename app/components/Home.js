@@ -2,7 +2,6 @@ import React from 'react';
 import { connect } from 'react-redux'
 import Messages from './Messages';
 import UserHome from './UserHome/UserHome';
-import { browserHistory } from 'react-router';
 
 class Home extends React.Component {
 

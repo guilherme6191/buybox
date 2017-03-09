@@ -45,7 +45,7 @@ export default function getRoutes(store) {
             <Route path="/forgot" component={Forgot} onEnter={skipIfAuthenticated} onLeave={clearMessages}/>
             <Route path='/reset/:token' component={Reset} onEnter={skipIfAuthenticated} onLeave={clearMessages}/>
             <Route path="/userhome">
-                <IndexRoute component={UserHome} onEnter={ensureAuthenticated} onLeave={clearMessages}/>
+                <IndexRoute component={UserHome} onEnter={skipToHomeIfAuthenticated} onLeave={clearMessages}/>
             </Route>
             <Route path="/addAlert" component={AddAlert} onEnter={ensureAuthenticated} onLeave={clearMessages}/>
             <Route path="/alert/:id" component={AlertForm} onEnter={ensureAuthenticated} onLeave={clearMessages}/>

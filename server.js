@@ -152,7 +152,7 @@ app.listen(app.get('port'), function () {
     new CronJob('0 0 0 * * *', function() {
         productCtrl.getProducts();
 
-    }, null, true, 'America/Sao_Paulo', null, false /* runs the job onInit */);
+    }, null, true, 'America/Sao_Paulo', null, null /* runs the job onInit */);
 });
 app.timeout = 5000;
 module.exports = app;
