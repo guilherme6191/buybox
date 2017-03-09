@@ -6,13 +6,13 @@ const SideBar = () => {
         browserHistory.push('/addAlert');
     };
     return (
-        <nav className="col-sm-4 col-md-2">
+        <div className="col-sm-12" style={{marginBottom:'10px'}}>
             <ul className="nav nav-sidebar">
                 <button className="btn btn-success" onClick={goToAdd}>
                     Adicionar Alerta de Preço
                 </button>
             </ul>
-        </nav>
+        </div>
     )
 };
 
