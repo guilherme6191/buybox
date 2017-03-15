@@ -1056,7 +1056,7 @@ html {
   -webkit-tap-highlight-color: transparent; }
 
 body {
-  font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: "Cabin", sans-serif;
   font-size: 14px;
   line-height: 1.57143;
   color: #333333;
@@ -5188,7 +5188,7 @@ button.close {
   position: absolute;
   z-index: 1070;
   display: block;
-  font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: "Cabin", sans-serif;
   font-style: normal;
   font-weight: normal;
   letter-spacing: normal;
@@ -5301,7 +5301,7 @@ button.close {
   display: none;
   max-width: 276px;
   padding: 1px;
-  font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: "Cabin", sans-serif;
   font-style: normal;
   font-weight: normal;
   letter-spacing: normal;
@@ -5818,12 +5818,28 @@ button.close {
   .hidden-print {
     display: none !important; } }
 
+.mkt-page .mkt-panel {
+  height: 500px;
+  padding: 100px 0; }
+  .mkt-page .mkt-panel h1 {
+    color: #4f5359;
+    font-size: 48px; }
+  .mkt-page .mkt-panel p {
+    font-size: 18px;
+    padding: 0 130px;
+    color: #626872; }
+
+.user-home .product-list {
+  padding: 15px 0 !important;
+  background-color: white; }
+
 html {
   position: relative;
   min-height: 100%; }
 
 body {
-  margin-bottom: 44px; }
+  margin-bottom: 44px;
+  font-size: 15px; }
 
 footer {
   position: absolute;
@@ -5841,6 +5857,8 @@ footer {
   border-width: 0 0 0 3px; }
 
 .navbar-default .navbar-nav > li > a {
+  font-size: 15px;
+  color: #2e3033;
   border-bottom: 3px solid transparent;
   padding-bottom: 14.5px;
   transition: all 0.25s; }

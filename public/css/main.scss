@@ -6,7 +6,7 @@ $link-hover-decoration: none;
 $brand-success: #29b35b;
 $brand-danger: #b61b17;
 
-$font-family-base: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+$font-family-base: "Cabin", sans-serif;
 $headings-font-weight: 600;
 
 $alert-info-border: #31708f;
@@ -32,6 +32,10 @@ $panel-body-padding: 30px;
 @import url("//fonts.googleapis.com/css?family=Open+Sans:300,400,600,700,800%7CRaleway:100,300,600,700,800");
 @import "vendor/bootstrap";
 
+//Components
+@import "../../app/components/Home";
+@import "../../app/components/UserHome/UserHome";
+
 // Scaffolding
 // -------------------------
 
@@ -42,6 +46,7 @@ html {
 
 body {
   margin-bottom: 44px;
+  font-size: 15px;
 }
 
 footer {
@@ -69,6 +74,8 @@ footer {
 // -------------------------
 
 .navbar-default .navbar-nav > li > a {
+  font-size: 15px;
+  color: #2e3033;
   border-bottom: 3px solid transparent;
   padding-bottom: ($navbar-padding-vertical - 3);
   transition: all 0.25s;
