@@ -38,7 +38,7 @@ class AlertItem extends React.Component {
     showProducts() {
         this.setState({
             isProductsShown: !this.state.isProductsShown,
-            productsDisplay: !this.state.isProductsShown? 'block' : 'none'
+            productsDisplay: !this.state.isProductsShown ? 'block' : 'none'
         });
     }
 

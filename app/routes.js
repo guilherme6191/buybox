@@ -1,6 +1,7 @@
 import React from 'react';
 import { IndexRoute, Route } from 'react-router';
 import App from './components/App';
+import AdminHome from './components/AdminHome/Components/AdminHome';
 import Home from './components/Home';
 import UserHome from './components/UserHome/UserHome';
 import AddAlert from './components/UserHome/AddAlert';
@@ -47,6 +48,7 @@ export default function getRoutes(store) {
             <Route path="/userhome">
                 <IndexRoute component={UserHome} onEnter={skipToHomeIfAuthenticated} onLeave={clearMessages}/>
             </Route>
+            <Route path="/adminHome" component={AdminHome} onEnter={ensureAuthenticated} onLeave={clearMessages}/>
             <Route path="/addAlert" component={AddAlert} onEnter={ensureAuthenticated} onLeave={clearMessages}/>
             <Route path="/alert/:id" component={AlertForm} onEnter={ensureAuthenticated} onLeave={clearMessages}/>
             <Route path="/trends" component={Trends} onLeave={clearMessages}/>

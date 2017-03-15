@@ -38,7 +38,9 @@ exports.alertGetAll = function (req, res, next) {
  * DELETE /account
  */
 exports.alertDelete = function (req, res, next) {
-    Alert.remove({ _id: req.params.id }, function (err) {
+    var id = req.body.id ? req.body.id : req.params.id;
+
+    Alert.remove({ _id: id }, function (err) {
         if (err) {
             return res.status(500).send();
         } else {

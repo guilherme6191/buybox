@@ -13,6 +13,13 @@ const msgStyle = {
 };
 
 class Header extends React.Component {
+    constructor(props) {
+        super(props);
+
+        if(this.props.token && !this.props.user) {
+            this.props.dispatch(logout());
+        }
+    }
     handleLogout(event) {
         event.preventDefault();
         this.props.dispatch(logout());
@@ -21,13 +28,18 @@ class Header extends React.Component {
     render() {
         const active = { borderBottomColor: '#3f51b5' };
         const admin = this.props.user && this.props.user.admin &&
-            <li activeStyle={active}>
-                <IndexLink to="/adminHome" activeStyle={active}>
+            <li>
+                <IndexLink to="/adminHome">
                     Admin
                 </IndexLink>
             </li>;
-        const homeLink = this.props.token && <li><IndexLink to="/userHome" activeStyle={active}>Home</IndexLink></li>;
-        const rightNav = this.props.token ? (
+        const homeLink = this.props.token &&
+            <li>
+                <IndexLink to="/userHome">
+                    <span>Home</span>
+                </IndexLink>
+            </li>;
+        const rightNav = this.props.token && this.props.user ? (
             <ul className="nav navbar-nav navbar-right">
                 <li className="dropdown">
                     <a href="#" data-toggle="dropdown" className="navbar-avatar dropdown-toggle">
@@ -44,8 +56,8 @@ class Header extends React.Component {
             </ul>
         ) : (
             <ul className="nav navbar-nav navbar-right">
-                <li><Link to="/login" activeStyle={active}>Entrar</Link></li>
-                <li><Link to="/signup" activeStyle={active}>Cadastre-se</Link></li>
+                <li><Link to="/login">Entrar</Link></li>
+                <li><Link to="/signup">Cadastre-se</Link></li>
             </ul>
         );
         return (
@@ -66,9 +78,9 @@ class Header extends React.Component {
                     <div id="navbar" className="navbar-collapse collapse">
                         <ul className="nav navbar-nav">
                             {homeLink}
-                            <li><Link to="/contact" activeStyle={active}>Contato</Link></li>
+                            <li><Link to="/contact">Contato</Link></li>
                             {admin}
-                            <li><Link to="/trends" activeStyle={active}>Precisando de ideias?</Link></li>
+                            <li><Link to="/trends">Precisando de ideias?</Link></li>
                         </ul>
                         <div style={ msgStyle }>
                             <Messages messages={this.props.messages}/>

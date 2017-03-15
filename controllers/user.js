@@ -18,13 +18,6 @@ function generateToken(user) {
     return jwt.sign(payload, process.env.TOKEN_SECRET);
 }
 
-var mailAuth = {
-    auth: {
-        api_key: 'key-81424b07942e163bb760fdc88198ee70',
-        domain: 'sandbox2ba027822c204b4383da167aaabef499.mailgun.org'
-    }
-};
-
 /**
  * Login required middleware
  */
@@ -87,7 +80,8 @@ exports.signupPost = function (req, res, next) {
         user = new User({
             name: req.body.name,
             email: req.body.email,
-            password: req.body.password
+            password: req.body.password,
+            partner: req.body.partner || false
         });
         user.save(function (err) {
             res.send({ token: generateToken(user), user: user });

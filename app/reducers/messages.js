@@ -10,6 +10,7 @@ export default function messages(state = {}, action) {
     case 'OAUTH_FAILURE':
     case 'UNLINK_FAILURE':
     case 'LINK_FAILURE':
+    case 'CREATE_PARTNER_FAILURE':
         return {
             error: action.messages
         };
@@ -19,6 +20,8 @@ export default function messages(state = {}, action) {
     case 'CONTACT_FORM_SUCCESS':
     case 'ALERT_DELETE_SUCCESS':
     case 'ALERT_UPDATE_SUCCESS':
+    case 'CREATE_PARTNER_OK':
+    case 'DELETE_PARTNER_SUCCESS':
         return {
             success: action.messages
         };
