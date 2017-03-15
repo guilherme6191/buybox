@@ -5,68 +5,120 @@ var Alert = require('../models/Alert');
 var async = require('async');
 var nodemailer = require('nodemailer');
 var User = require('../models/User');
+var APIProduct = require('../models/APIProduct');
 
-exports.getProducts = function (alert) {
-    console.log("Process starting...");
+exports.getApiProducts = function () {
+    console.log("getApiProducts Process starting...");
     async.waterfall([
-        function (waterfallCallback) {
-            if (alert) {
-                Alert.findById(alert._id, function (err, alert) {
-                    waterfallCallback(null, [alert]);
-                })
-            } else {
-                Alert.find({}, function (err, alert) {
-                    waterfallCallback(null, alert)
-                })
-            }
-        },
-        function (alerts, waterfallCallback) {
-            console.log("Starting to get buscape products.");
-            getBuscapeProducts(alerts, waterfallCallback);
-            console.log("Done getting buscape products.");
-        },
-        function (alerts, buscapeList, waterfallCallback) {
-            async.eachSeries(alerts,
-                function (alert, eachCallback) {
-                    async.waterfall([
-                            function (waterfallCallback) {
-                                getFonoApiAndCompare(buscapeList, alert, waterfallCallback);
-                                console.log("Comparing with specs from fonoApi for alert: " + alert.alertName);
-                            },
-                            function (specReadyList, alert, waterfallCallback) {
-                                saveProductList(specReadyList, alert, waterfallCallback);
-                                console.log("Saving matches, if any was found for alert: " + alert.alertName);
-                            }],
-                        function (err) {
-                            if (err) {
-                                console.log(err)
-                            } else {
-                                eachCallback()
-                            }
-                        });
-                },
-
-                function done(err) {
-                    if (err) {
-                        console.log(err)
-                    } else {
-                        waterfallCallback();
-                    }
-                });
-
+            function (waterfallCallback) {
+                console.log("Starting to get buscape products.");
+                getBuscapeProducts(waterfallCallback);
+                console.log("Done getting buscape products.");
+            },
+            function (buscapeList, waterfallCallback) {
+                console.log("Starting to get fonoApi products and merge.");
+                getFonoApiAndMerge(buscapeList, waterfallCallback);
+                console.log("Done getting fonoApi products and merge.");
+            }],
+        function (err) {
+            if (err) console.log(err);
+            console.log('Processing done.');
         }
-    ], function (err) {
-        console.log('Processing done.');
-    });
+    );
 };
 
-function getFonoApiAndCompare(buscapeList, alert, callback) {
+exports.match = function (alert) {
+    console.log("Match Process starting...");
+    async.waterfall([
+            function (waterfallCallback) {
+                if (alert) {
+                    Alert.findById(alert._id, function (err, alert) {
+                        waterfallCallback(null, [alert]);
+                    })
+                } else {
+                    Alert.find({}, function (err, alerts) {
+                        waterfallCallback(null, alerts)
+                    })
+                }
+            },
+            function (alerts, waterfallCallback) {
+                async.eachSeries(alerts,
+                    function (alert, eachCallback) {
+                        async.waterfall([
+                                function (waterCall) {
+                                    APIProduct
+                                        .find({
+                                            'storage': { $gte: alert.storage },
+                                            'ram': { $gte: alert.ram },
+                                            'frontCam': { $gte: alert.frontCam },
+                                            'rearCam': { $gte: alert.rearCam }
+                                        }, function (err, data) {
+                                            waterCall(null, data.sort(function (a, b) {
+                                                return parseFloat(a.price) - parseFloat(b.price);
+                                            }).slice(0, 3));
+                                        });
+                                },
+                                function (specMatches, watercall) {
+                                    alert.products = specMatches.map(function (specMatch) {
+                                        return {
+                                            url: specMatch.url, //buscape
+                                            productName: specMatch.productName,
+                                            price: specMatch.price, //buscape
+                                            ram: specMatch.ram,
+                                            frontCam: specMatch.frontCam,
+                                            rearCam: specMatch.rearCam,
+                                            storage: specMatch.storage,
+                                            dualChip: specMatch.dualChip,
+                                            isMatch: (parseFloat(specMatch.price) <= parseFloat(alert.price))
+                                        }
+                                    });
+
+                                    Alert.update({ _id: alert._id }, alert, function (err) {
+                                        if (err && err.code) {
+                                            alert.products = [];
+                                            watercall(alert);
+                                        } else {
+                                            User.findOne({ _id: alert.userId }, function (err, user) {
+                                                if (!err) {
+                                                    alert.products.map(function (p) {
+                                                        if (p.isMatch) {
+                                                            sendMatchEmail(p, user, alert);
+                                                        }
+                                                    });
+                                                }
+                                            });
+
+                                            watercall(null, alert);
+                                        }
+                                    });
+                                }],
+                            function (err) {
+                                if (err) console.log(err);
+                                eachCallback(null, alert);
+                            }
+                        );
+                    }, function done(err) {
+                        if (err) {
+                            console.log(err)
+                        } else {
+                            waterfallCallback(alerts);
+                        }
+                    });
+
+            }],
+        function (err) {
+            if (err) console.log(err);
+            console.log('Processing done.');
+        })
+};
+
+function getFonoApiAndMerge(buscapeList, callback) {
 
     var resultSpecList = [];
     //preFilter our list
     buscapeList = buscapeList
         .filter(function (elem) {
-            return preFilter(elem, alert);
+            return preFilter(elem, null);
         });
 
     async.eachSeries(buscapeList,
@@ -88,8 +140,7 @@ function getFonoApiAndCompare(buscapeList, alert, callback) {
                 } else {
                     eachSeriesCallback(null, data.map(function (fonoProduct) {
                         if (isNameMatch(fonoProduct, buscape.product)) {
-                            var specRateObj = matchAllSpecs(fonoProduct, alert);
-                            return resultSpecList.push(buildSpecObj(specRateObj, fonoProduct, buscape.product));
+                            return resultSpecList.push(buildAPIProductObj(fonoProduct, buscape.product));
                         } else {
                             //ignore
                             //console.log('not a name match')
@@ -101,25 +152,50 @@ function getFonoApiAndCompare(buscapeList, alert, callback) {
 
         },
         function done(err) {
-            var matchSpecList = resultSpecList
-                .filter(function (elem) {
-                    return elem && elem.rate === 4;
-                });
-
-            callback(null, matchSpecList.sort(function (a, b) {
-                return parseFloat(a.price) - parseFloat(b.price);
-            }).slice(0, 3), alert);
+            if (err) console.log(err);
+            saveApiProducts(callback, resultSpecList);
         });
 }
 
-function getBuscapeProducts(alerts, callback) {
+function saveApiProducts(callback, productList) {
+    console.log("Starting to save Api products.");
+    var rawProducts = productList.map(function (prod) {
+        return {
+            url: prod.url, //buscape
+            productName: prod.productName,
+            price: prod.price, //buscape
+            ram: prod.ram, //fono
+            frontCam: prod.frontCam, //fono (secondary)
+            rearCam: prod.rearCam, //fono (primary)
+            storage: prod.storage, //fono
+            dualChip: prod.dualChip //buscape
+        }
+    });
+
+    APIProduct.remove({}, function (err) {
+        if (err) {
+            console.log("APIProduct collection couldn't be deleted: " + err);
+        } else {
+            APIProduct.create(rawProducts, function (err) {
+                if (err) {
+                    console.log(err)
+                } else {
+                    if (callback) callback(null, rawProducts);
+                    console.log("APIProduct collection updated");
+                }
+            })
+        }
+    });
+}
+
+function getBuscapeProducts(callback) {
 
     var url =
         process.env.FIND_PRODUCTS_URL + '&results=100';
     request(url, function (err, response, body) {
         if (!err && response.statusCode == 200) {
             var result = JSON.parse(body);
-            callback(null, alerts, result.product);
+            callback(null, result.product);
         } else {
             console.log(err)
         }
@@ -138,66 +214,18 @@ function preFilter(elem, alert) {
     } // if there is no complete specs info, discard for now
 
     var specs = elem.product.specification.item;
-    return specs.every(function (elem) {
-        if (alert.dualChip && elem.item.label === 'Chips' && elem.item.value[0] !== 'Dual Chip') {
-            return false;
-        }
-        else {
-            return true;
-        }
-    });
-}
-
-
-/**
- * Updates alert with the best products found
- *
- * @param list
- * @param alert
- * @param callback
- */
-function saveProductList(list, alert, callback) {
-
-    if (list && list.length <= 3) { //make sure max 3 to show up in FE
-
-        alert.products = [];
-        alert.products = list.map(function (readyProd) {
-            return {
-                rate: readyProd.rate,
-                url: readyProd.url, //buscape
-                productName: readyProd.productName,
-                price: readyProd.price, //buscape
-                ram: readyProd.ram, //fono
-                frontCam: readyProd.frontCam, //fono (secondary)
-                rearCam: readyProd.rearCam, //fono (primary)
-                storage: readyProd.storage, //fono
-                dualChip: readyProd.dualChip, //buscape
-                isMatch: (parseFloat(readyProd.price) <= parseFloat(alert.price)) && readyProd.rate === 4
+    if (alert) {
+        return specs.every(function (elem) {
+            if (alert.dualChip && elem.item.label === 'Chips' && elem.item.value[0] !== 'Dual Chip') {
+                return false;
             }
-        });
-
-        Alert.update({ _id: alert._id }, alert, function (err) {
-            if (err && err.code) {
-                alert.products = [];
-                callback(alert);
-            } else {
-                User.findOne({ _id: alert.userId }, function (err, user) {
-                    if (!err) {
-                        alert.products.map(function (p) {
-                            if (p.isMatch) {
-                                sendMatchEmail(p, user, alert);
-                            }
-                        });
-                    }
-                });
-
-                callback(null, alert);
+            else {
+                return true;
             }
         });
     } else {
-        callback(null, alert)
+        return true;
     }
-
 }
 
 function sendMatchEmail(product, user, alert) {
@@ -224,39 +252,6 @@ function sendMatchEmail(product, user, alert) {
     });
 }
 
-
-/**
- * builds a Product object
- * @param specRateObj
- * @param fonoProd
- * @param apiProd
- * @returns {{rate: (*|number), productName: *, price: *, ram: (*|string), frontCam: (*|string), rearCam: (*|string), storage: (*|string), dualChip: boolean}}
- */
-function buildSpecObj(specRateObj, fonoProd, apiProd) {
-
-    //handle chips to bool
-    var dualChip = apiProd.specification.item
-        .find(function (obj) { //parse to boolean chips
-            return obj.item.label === 'Chips'
-        });
-
-    var url = apiProd.links.find(function (link) {
-        return link.link.type === "product"
-    }).link.url;
-
-    return {
-        url: url,
-        rate: specRateObj.rate,
-        productName: fonoProd.DeviceName,
-        price: apiProd.pricemin, //buscape
-        ram: specRateObj.ram, //fono
-        frontCam: specRateObj.frontCam, //fono (secondary)
-        rearCam: specRateObj.rearCam, //fono (primary)
-        storage: specRateObj.storage, //fono
-        dualChip: dualChip && dualChip.item && dualChip.item.value && (dualChip.item.value[0].trim() === 'Dual Chip')
-    }
-}
-
 function isNameMatch(fonoProd, buscapeProd) {
 
     var fonoName = fonoProd.DeviceName;
@@ -271,41 +266,39 @@ function isNameMatch(fonoProd, buscapeProd) {
         return false;
     }
 }
-/**
- * checks all smartphone specs
- * @param fonoProduct
- * @param alert
- * @returns {{rate: number, storage: *, rearCam: *, frontCam: *}}
- */
-function matchAllSpecs(fonoProduct, alert) {
 
-    var matchRate = 0;
+function buildAPIProductObj(fonoProduct, buscape) {
 
-    var storage = fonoProduct.internal.split(',')[0].trim().split(' ')[0];
-    var ram = fonoProduct.internal.split(',')[1].trim().split(' ')[0];
+    var dualChip = buscape.specification.item
+        .find(function (obj) { //parse to boolean chips
+            return obj.item.label === 'Chips'
+        });
 
-    var rearCam = fonoProduct.primary_.split(' ')[0].trim().split(' ')[0];
-    var frontCam = fonoProduct.secondary.split(' ')[0].trim().split(' ')[0];
+    var url = buscape.links.find(function (link) {
+        return link.link.type === "product"
+    }).link.url;
 
-    if (!isNaN(storage) && storage >= alert.storage) {
-        matchRate += 1;
-    }
-    if (!isNaN(ram) && ram >= alert.ram) {
-        matchRate += 1;
-    }
-    if (!isNaN(rearCam) && rearCam >= alert.rearCam) {
-        matchRate += 1;
-    }
-    if (!isNaN(frontCam) && frontCam >= alert.frontCam) {
-        matchRate += 1;
-    }
+
+    var storage = checkNaN(fonoProduct.internal.split(',')[0].trim().split(' ')[0].trim().split('/')[0]);
+    var ram = checkNaN(fonoProduct.internal.split(',')[1].trim().split(' ')[0]);
+    var rearCam = checkNaN(fonoProduct.primary_.split(' ')[0].trim().split(' ')[0]);
+    var frontCam = checkNaN(fonoProduct.secondary.split(' ')[0].trim().split(' ')[0]);
+
+
     return {
-        rate: matchRate,
+        productName: fonoProduct.DeviceName,
+        price: buscape.pricemin, //buscape
         storage: storage,
         rearCam: rearCam,
         frontCam: frontCam,
-        ram: ram
+        ram: ram,
+        dualChip: dualChip,
+        url: url
     };
 
+}
+
+function checkNaN(n) {
+    return isNaN(n) ? 0 : n;
 }
 

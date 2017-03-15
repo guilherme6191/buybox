@@ -14,6 +14,10 @@ export default function alert(state = {}, action) {
             alerts: alerts,
             ready: action.ready
         };
+    case ('GET_ALERT_SUCCESS'):
+        return {
+          selectedAlert: action.selectedAlert
+        };
     default:
         return state
     }

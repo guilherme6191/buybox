@@ -150,9 +150,10 @@ app.listen(app.get('port'), function () {
 
     //runs everyday at midnight: '0 0 0 * * *' sec min hours
     new CronJob('0 0 0 * * *', function() {
-        productCtrl.getProducts();
+        //productCtrl.getApiProducts();
+        //productCtrl.match();
 
-    }, null, true, 'America/Sao_Paulo', null, null /* runs the job onInit */);
+    }, null, true, 'America/Sao_Paulo', null, true /* runs the job onInit */);
 });
 app.timeout = 5000;
 module.exports = app;

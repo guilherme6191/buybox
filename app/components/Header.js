@@ -20,6 +20,12 @@ class Header extends React.Component {
 
     render() {
         const active = { borderBottomColor: '#3f51b5' };
+        const admin = this.props.user && this.props.user.admin &&
+            <li activeStyle={active}>
+                <IndexLink to="/adminHome" activeStyle={active}>
+                    Admin
+                </IndexLink>
+            </li>;
         const homeLink = this.props.token && <li><IndexLink to="/userHome" activeStyle={active}>Home</IndexLink></li>;
         const rightNav = this.props.token ? (
             <ul className="nav navbar-nav navbar-right">
@@ -49,18 +55,19 @@ class Header extends React.Component {
                         <button type="button" data-toggle="collapse" data-target="#navbar"
                                 className="navbar-toggle collapsed">
                             <span className="sr-only">Toggle navigation</span>
-                            <span className="icon-bar" />
-                            <span className="icon-bar" />
-                            <span className="icon-bar" />
+                            <span className="icon-bar"/>
+                            <span className="icon-bar"/>
+                            <span className="icon-bar"/>
                         </button>
                         <IndexLink to="/" className="navbar-brand">
-                            <img src="../images/bbNameLogo.jpg" style={{marginTop: '-4px'}} width="120px" />
+                            <img src="../images/bbNameLogo.jpg" style={{marginTop: '-4px'}} width="120px"/>
                         </IndexLink>
                     </div>
                     <div id="navbar" className="navbar-collapse collapse">
                         <ul className="nav navbar-nav">
                             {homeLink}
                             <li><Link to="/contact" activeStyle={active}>Contato</Link></li>
+                            {admin}
                             <li><Link to="/trends" activeStyle={active}>Precisando de ideias?</Link></li>
                         </ul>
                         <div style={ msgStyle }>

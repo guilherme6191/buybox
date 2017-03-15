@@ -1,7 +1,6 @@
 var mongoose = require('mongoose');
 
 var productSchema = new mongoose.Schema({
-    rate: Number,
     url: String, //buscape
     productName: String,
     price: String, //buscape
