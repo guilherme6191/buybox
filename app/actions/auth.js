@@ -22,8 +22,8 @@ export function login(email, password) {
                         token: json.token,
                         user: json.user
                     });
-                    cookie.save('token', json.token, { expires: moment().add(1, 'hour').toDate() });
-                    browserHistory.push('/');
+                    cookie.save('token', json.token, { expires: moment().add(48, 'hour').toDate() });
+                    browserHistory.push('/userHome');
                 });
             } else {
                 return response.json().then((json) => {
@@ -49,12 +49,13 @@ export function signup(name, email, password) {
         }).then((response) => {
             return response.json().then((json) => {
                 if (response.ok) {
+                    notify();
                     dispatch({
                         type: 'SIGNUP_SUCCESS',
                         token: json.token,
                         user: json.user
                     });
-                    browserHistory.push('/');
+                    browserHistory.push('/userHome');
                     cookie.save('token', json.token, { expires: moment().add(1, 'hour').toDate() });
                 } else {
                     dispatch({
@@ -67,9 +68,21 @@ export function signup(name, email, password) {
     };
 }
 
+const notify = () => {
+    if (typeof window !== 'undefined' && 'Notification' in window && Notification.permission === "granted") {
+        const options = {
+            body: "Nos conte o que precisa em um smartphone que a gente procura para você! :)",
+            icon: "../images/bb-logo.jpg"
+        };
+        new Notification("BuyBox", options);
+    }
+};
+
 export function logout() {
     cookie.remove('token');
-    browserHistory.push('/');
+    setTimeout(function () {
+        browserHistory.push('/');
+    }, 50);
     return {
         type: 'LOGOUT_SUCCESS'
     };
@@ -91,7 +104,6 @@ export function forgotPassword(email) {
                         type: 'FORGOT_PASSWORD_SUCCESS',
                         messages: [json]
                     });
-                    browserHistory.push('/');
                 });
             } else {
                 return response.json().then((json) => {
@@ -163,6 +175,10 @@ export function updateProfile(state, token) {
                         type: 'UPDATE_PROFILE_SUCCESS',
                         messages: [json]
                     });
+                    dispatch({
+                        type: 'PROFILE_UPDATED',
+                        user: state
+                    })
                 });
             } else {
                 return response.json().then((json) => {

@@ -18,13 +18,6 @@ function generateToken(user) {
     return jwt.sign(payload, process.env.TOKEN_SECRET);
 }
 
-var mailAuth = {
-    auth: {
-        api_key: 'key-81424b07942e163bb760fdc88198ee70',
-        domain: 'sandbox2ba027822c204b4383da167aaabef499.mailgun.org'
-    }
-};
-
 /**
  * Login required middleware
  */
@@ -40,7 +33,7 @@ exports.ensureAuthenticated = function (req, res, next) {
  * Sign in with email and password
  */
 exports.loginPost = function (req, res, next) {
-    req.assert('email', 'Email inválido').isEmail();
+    req.assert('email', 'Dados inválidos.').isEmail();
     req.assert('email', 'Email não pode estar em branco.').notEmpty();
     req.assert('password', 'Senha não pode estar em branco.').notEmpty();
     req.sanitize('email').normalizeEmail({ remove_dots: false });
@@ -53,11 +46,11 @@ exports.loginPost = function (req, res, next) {
 
     User.findOne({ email: req.body.email }, function (err, user) {
         if (!user) {
-            return res.status(401).send({ msg: 'Senha ou email inválidos.' });
+            return res.status(401).send({ msg: 'Dados inválidos.' });
         }
         user.comparePassword(req.body.password, function (err, isMatch) {
             if (!isMatch) {
-                return res.status(401).send({ msg: 'Senha ou email inválidos.' });
+                return res.status(401).send({ msg: 'Dados inválidos.' });
             }
             res.send({ token: generateToken(user), user: user.toJSON() });
         });
@@ -69,7 +62,7 @@ exports.loginPost = function (req, res, next) {
  */
 exports.signupPost = function (req, res, next) {
     req.assert('name', 'Name não pode estar em branco.').notEmpty();
-    req.assert('email', 'Email inválido').isEmail();
+    req.assert('email', 'Dados inválidos.').isEmail();
     req.assert('email', 'Email não pode estar em branco.').notEmpty();
     req.assert('password', 'senha deve ter pelo menos 4 caracteres').len(4);
     req.sanitize('email').normalizeEmail({ remove_dots: false });
@@ -87,7 +80,8 @@ exports.signupPost = function (req, res, next) {
         user = new User({
             name: req.body.name,
             email: req.body.email,
-            password: req.body.password
+            password: req.body.password,
+            partner: req.body.partner || false
         });
         user.save(function (err) {
             res.send({ token: generateToken(user), user: user });
@@ -105,7 +99,7 @@ exports.accountPut = function (req, res, next) {
         req.assert('password', 'Senha deve ter pelo menos 4 caracteres').len(4);
         req.assert('confirm', 'Senha deve ser válida').equals(req.body.password);
     } else {
-        req.assert('email', 'Email inválido').isEmail();
+        req.assert('email', 'Dados inválidos.').isEmail();
         req.assert('email', 'Email não pode estar em branco.').notEmpty();
         req.sanitize('email').normalizeEmail({ remove_dots: false });
     }
@@ -128,11 +122,11 @@ exports.accountPut = function (req, res, next) {
         }
         user.save(function (err) {
             if ('password' in req.body) {
-                res.send({ msg: 'Your senha has been changed.' });
+                res.send({ msg: 'Your senha foi alterada com sucesso.' });
             } else if (err && err.code === 11000) {
                 res.status(409).send({ msg: 'O email inserido já está associado com outra conta.' });
             } else {
-                res.send({ user: user, msg: 'Perfil atualizado..' });
+                return res.status(200).send({ user: user, msg: 'Perfil atualizado.' });
             }
         });
     });
@@ -181,7 +175,7 @@ exports.unlink = function (req, res, next) {
  * POST /forgot
  */
 exports.forgotPost = function (req, res, next) {
-    req.assert('email', 'Email inválido').isEmail();
+    req.assert('email', 'Dados inválidos.').isEmail();
     req.assert('email', 'Email não pode estar em branco.').notEmpty();
     req.sanitize('email').normalizeEmail({ remove_dots: false });
 
@@ -211,8 +205,14 @@ exports.forgotPost = function (req, res, next) {
             });
         },
         function (token, user, done) {
-            var nodemailerMailgun = nodemailer.createTransport(mg(mailAuth));
-            nodemailerMailgun.sendMail({
+            var transporter = nodemailer.createTransport({
+                service: 'Gmail',
+                auth: {
+                    user: process.env.GMAIL_MAIL, // Your email id
+                    pass: process.env.GMAIL_PASS // Your password
+                }
+            });
+            transporter.sendMail({
                 from: 'postmaster@sandbox2ba027822c204b4383da167aaabef499.mailgun.org',
                 to: user.email,
                 subject: '✔ Reinicia sua senha para o BuyBox!',
@@ -225,7 +225,7 @@ exports.forgotPost = function (req, res, next) {
                 }
                 else {
                     console.log('Response: ' + info);
-                    res.status(200).send();
+                    res.status(200).send({ msg: 'Favor checar seu email, inclusive caixa de Spam, para continuar com o procedimento.' });
                 }
             });
         }
@@ -251,7 +251,7 @@ exports.resetPost = function (req, res, next) {
                 .where('passwordResetExpires').gt(Date.now())
                 .exec(function (err, user) {
                     if (!user) {
-                        return res.status(400).send({ msg: 'Password reset token is invalid or has expired.' });
+                        return res.status(400).send({ msg: 'Token da senha inválido ou expirado.' });
                     }
                     user.password = req.body.password;
                     user.passwordResetToken = undefined;
@@ -263,17 +263,17 @@ exports.resetPost = function (req, res, next) {
         },
         function (user, done) {
             var transporter = nodemailer.createTransport({
-                service: 'Mailgun',
+                service: 'Gmail',
                 auth: {
-                    user: process.env.MAILGUN_USERNAME,
-                    pass: process.env.MAILGUN_PASSWORD
+                    user: process.env.GMAIL_MAIL,
+                    pass: process.env.GMAIL_PASS // Your password
                 }
             });
             var mailOptions = {
                 from: 'support@yourdomain.com',
                 to: user.email,
                 subject: 'Sua senha BuyBox foi alterada!',
-                text: 'Hello,\n\n' +
+                text: 'Olá,\n\n' +
                 'Essa é uma confirmação que sua senha para o email ' + user.email + ' foi alterada.\n'
             };
             transporter.sendMail(mailOptions, function (err) {
@@ -484,8 +484,10 @@ exports.authTwitter = function (req, res) {
                 if (req.isAuthenticated()) {
                     User.findOne({ twitter: profile.id }, function (err, user) {
                         if (user) {
-                            return res.status(409).send({ msg: 'Já existe uma conta associada com Twitter ' +
-                            'que pertence a você.' });
+                            return res.status(409).send({
+                                msg: 'Já existe uma conta associada com Twitter ' +
+                                'que pertence a você.'
+                            });
                         }
                         user = req.user;
                         user.name = user.name || profile.name;
