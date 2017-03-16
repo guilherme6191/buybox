@@ -2,6 +2,14 @@
   "name": "buybox",
   "version": "1.0.0",
   "description": "Buybox",
+  "license": {
+    "type": "MIT",
+    "url": "https://opensource.org/licenses/MIT"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/username/repository.git"
+  },
   "scripts": {
     "build": "webpack --display-error-details",
     "deploy": "npm test && git push heroku master",
