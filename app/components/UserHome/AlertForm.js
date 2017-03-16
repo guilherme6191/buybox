@@ -53,6 +53,14 @@ class AlertForm extends React.Component {
     }
 
     handleSubmit(event) {
+        if (typeof window !== 'undefined' && 'Notification' in window && Notification.permission === "granted") {
+            const options = {
+                body: "Já estamos procurando para você! Cheque daqui a pouco, se não encontrarmos agora, " +
+                "continuaremos procurando então fique de olho no seu email.",
+                icon: "../images/bb-logo.jpg"
+            };
+            new Notification("BuyBox", options);
+        }
         this.props.dispatch(addAlert(this.state.fields, this.props.token, this.props.user._id));
         event.preventDefault();
         this.back();
@@ -168,7 +176,7 @@ class AlertForm extends React.Component {
                         </div>
                     </form>
                 </div>
-            ) : <div className="container panel panel-body"><span> Carregando... </span> </div>;
+            ) : <div className="container panel panel-body"><span> Carregando... </span></div>;
 
         return (
             <div>

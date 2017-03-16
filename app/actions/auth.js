@@ -49,6 +49,7 @@ export function signup(name, email, password) {
         }).then((response) => {
             return response.json().then((json) => {
                 if (response.ok) {
+                    notify();
                     dispatch({
                         type: 'SIGNUP_SUCCESS',
                         token: json.token,
@@ -66,6 +67,16 @@ export function signup(name, email, password) {
         });
     };
 }
+
+const notify = () => {
+    if (typeof window !== 'undefined' && 'Notification' in window && Notification.permission === "granted") {
+        const options = {
+            body: "Nos conte o que precisa em um smartphone que a gente procura para você! :)",
+            icon: "../images/bb-logo.jpg"
+        };
+        new Notification("BuyBox", options);
+    }
+};
 
 export function logout() {
     cookie.remove('token');
