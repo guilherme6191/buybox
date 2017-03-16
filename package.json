@@ -50,9 +50,7 @@
     "webpack": "^1.12.14",
     "webpack-dev-middleware": "^1.6.1",
     "webpack-hot-middleware": "^2.10.0",
-    "whatwg-fetch": "^0.11.0"
-  },
-  "devDependencies": {
+    "whatwg-fetch": "^0.11.0",
     "babel-plugin-rewire": "1.0.0-rc-3",
     "babel-register": "^6.8.0",
     "chai": "^3.5.0",
