@@ -5,7 +5,7 @@ import SideBar from './SideBar'
 class UserHome extends React.Component {
     render() {
         return (
-            <div className="container">
+            <div className="container user-home">
                 <div id="userHome" className="row">
                     <SideBar />
                     <AlertList />

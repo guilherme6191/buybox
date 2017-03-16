@@ -33,7 +33,7 @@ var User = require('./models/User');
 // Controllers
 var userController = require('./controllers/user');
 var alertController = require('./controllers/alert');
-//var contactController = require('./controllers/contact');
+var partnerController = require('./controllers/partner');
 
 // React and Server-Side Rendering
 var routes = require('./app/routes');
@@ -58,7 +58,6 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(expressValidator());
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(function (req, res, next) {
     req.isAuthenticated = function () {
@@ -89,6 +88,8 @@ if (app.get('env') === 'development') {
     app.use(require('webpack-hot-middleware')(compiler));
 }
 
+app.use(express.static(path.join(__dirname, 'public')));
+
 //app.post('/contact', contactController.contactPost);
 app.put('/account', userController.ensureAuthenticated, userController.accountPut);
 app.delete('/account', userController.ensureAuthenticated, userController.accountDelete);
@@ -104,10 +105,15 @@ app.get('/auth/google/callback', userController.authGoogleCallback);
 app.post('/auth/twitter', userController.authTwitter);
 app.get('/auth/twitter/callback', userController.authTwitterCallback);
 
+//alerts
 app.post('/alerts/add', userController.ensureAuthenticated, alertController.alertPost);
 app.post('/alerts', userController.ensureAuthenticated, alertController.alertGetAll);
 app.get('/alert/:id', userController.ensureAuthenticated, alertController.alertGetOne);
 app.delete('/alert/:id', userController.ensureAuthenticated, alertController.alertDelete);
+
+//partners
+app.get('/partners', userController.ensureAuthenticated, partnerController.getPartners);
+app.delete('/partner', userController.ensureAuthenticated, partnerController.deletePartner);
 
 // React server rendering
 app.use(function (req, res) {
@@ -150,9 +156,10 @@ app.listen(app.get('port'), function () {
 
     //runs everyday at midnight: '0 0 0 * * *' sec min hours
     new CronJob('0 0 0 * * *', function() {
-        productCtrl.getProducts();
+        //productCtrl.getApiProducts();
+        //productCtrl.match();
 
-    }, null, true, 'America/Sao_Paulo', null, null /* runs the job onInit */);
+    }, null, true, 'America/Sao_Paulo', null, true /* runs the job onInit */);
 });
 app.timeout = 5000;
 module.exports = app;

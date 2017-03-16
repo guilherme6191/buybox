@@ -7,7 +7,7 @@ const btnStyle = {
 };
 
 const showProductsSpan = {
-    marginTop: '7px',
+    marginTop: '8.5px',
     display: 'inline-block',
     marginLeft: '1%'
 };
@@ -22,7 +22,8 @@ class AlertItem extends React.Component {
         super(props);
         this.state = {
             isProductsShown: false,
-            isThereMatch: this.props.products.some(p => p.isMatch)
+            isThereMatch: this.props.products.some(p => p.isMatch),
+            productsDisplay: 'none'
         };
 
         this.goToAlert = this.goToAlert.bind(this);
@@ -36,7 +37,8 @@ class AlertItem extends React.Component {
 
     showProducts() {
         this.setState({
-            isProductsShown: !this.state.isProductsShown
+            isProductsShown: !this.state.isProductsShown,
+            productsDisplay: !this.state.isProductsShown ? 'block' : 'none'
         });
     }
 
@@ -51,9 +53,7 @@ class AlertItem extends React.Component {
     }
 
     delete() {
-        if (confirm("Esta ação é definitiva.")) {
-            this.props.onDelete(this.props._id);
-        }
+        this.props.onDelete(this.props._id);
     }
 
     render() {
@@ -89,7 +89,8 @@ class AlertItem extends React.Component {
                         Editar
                     </button>
                 </div>
-                <ul style={{ backgroundColor: '#f4f4f4', padding: '0px' }}>
+                <ul style={{ display: this.state.productsDisplay }}
+                    className="product-list">
                     {productsList}
                 </ul>
 

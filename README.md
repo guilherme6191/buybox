@@ -15,3 +15,10 @@ Belo Horizonte, Brasil.
 *Application's privacy policy*
 
 This app won't publish or sell your data in any circunstances.
+
+-------------------------------------------
+
+The main goal of this project is to learn so there all kinds of experiments here.
+You'll be able to see different styling for the components, different structures and etc.
+This is because I wanted to experiment and try different things along with coding.
+

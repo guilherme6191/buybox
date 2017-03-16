@@ -38,7 +38,9 @@ exports.alertGetAll = function (req, res, next) {
  * DELETE /account
  */
 exports.alertDelete = function (req, res, next) {
-    Alert.remove({ _id: req.params.id }, function (err) {
+    var id = req.body.id ? req.body.id : req.params.id;
+
+    Alert.remove({ _id: id }, function (err) {
         if (err) {
             return res.status(500).send();
         } else {
@@ -77,6 +79,7 @@ exports.alertPost = function (req, res, next) {
                         'Por favor, tente mais tarde!'
                     });
                 } else {
+                    ProductCtrl.match(alert);
                     res.status(206).send({ alert });
                 }
             })
@@ -102,6 +105,7 @@ exports.alertPost = function (req, res, next) {
             if (err && err.code) {
                 res.status(500).send({ msg: 'Falha na inserção do Alerta de Preços. Por favor, tente mais tarde!' });
             } else {
+                ProductCtrl.match(alert);
                 res.status(206).send({ alert });
             }
         })

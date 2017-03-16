@@ -1056,7 +1056,7 @@ html {
   -webkit-tap-highlight-color: transparent; }
 
 body {
-  font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: "Cabin", sans-serif;
   font-size: 14px;
   line-height: 1.57143;
   color: #333333;
@@ -5188,7 +5188,7 @@ button.close {
   position: absolute;
   z-index: 1070;
   display: block;
-  font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: "Cabin", sans-serif;
   font-style: normal;
   font-weight: normal;
   letter-spacing: normal;
@@ -5301,7 +5301,7 @@ button.close {
   display: none;
   max-width: 276px;
   padding: 1px;
-  font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: "Cabin", sans-serif;
   font-style: normal;
   font-weight: normal;
   letter-spacing: normal;
@@ -5818,12 +5818,40 @@ button.close {
   .hidden-print {
     display: none !important; } }
 
+.mkt-page .mkt-panel {
+  height: 500px;
+  padding: 100px 0; }
+  .mkt-page .mkt-panel h1 {
+    color: #4f5359;
+    font-size: 48px; }
+  .mkt-page .mkt-panel p {
+    font-size: 18px;
+    padding: 0 130px;
+    color: #626872; }
+
+.user-home .product-list {
+  padding: 15px 0 !important;
+  background-color: white; }
+
+.admin-home label {
+  margin: 0; }
+
+.admin-home .insert-container {
+  margin-top: 10px;
+  margin-bottom: 10px; }
+
+.admin-home .partner-item {
+  height: 57px; }
+  .admin-home .partner-item label {
+    padding: 7px 0; }
+
 html {
   position: relative;
   min-height: 100%; }
 
 body {
-  margin-bottom: 44px; }
+  margin-bottom: 44px;
+  font-size: 15px; }
 
 footer {
   position: absolute;
@@ -5841,6 +5869,8 @@ footer {
   border-width: 0 0 0 3px; }
 
 .navbar-default .navbar-nav > li > a {
+  font-size: 15px;
+  color: #2e3033;
   border-bottom: 3px solid transparent;
   padding-bottom: 14.5px;
   transition: all 0.25s; }
@@ -5875,29 +5905,15 @@ footer {
   float: none;
   margin-bottom: 5px; }
 
-.btn {
-  font-weight: 600;
-  border-radius: 3px; }
-  .btn:focus {
-    outline: 0 !important; }
-
-.btn-default {
-  border-color: #ccc;
-  background: #f5f5f5 linear-gradient(to bottom, #fff, #f5f5f5);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08), inset 0 -1px 4px rgba(151, 159, 175, 0.2); }
-  .btn-default:active {
-    background: #e6e6e6 linear-gradient(to bottom, #f0f0f0, #e6e6e6); }
+.btn:focus {
+  outline: 0 !important; }
 
 .btn-success {
-  border-color: #208a46;
-  background: #29b35b linear-gradient(to bottom, #2ec866, #29b35b);
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2), inset 0 1px 1px rgba(255, 255, 255, 0.1), inset 0 -1px 4px rgba(32, 138, 70, 0.3); }
   .btn-success:active {
     background: #239a4e linear-gradient(to bottom, #28af59, #239a4e); }
 
 .btn-danger {
-  border-color: #8c1512;
-  background: #b61b17 linear-gradient(to bottom, #cc1e1a, #b61b17);
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2), inset 0 1px 1px rgba(255, 255, 255, 0.1), inset 0 -1px 4px rgba(140, 21, 18, 0.3); }
   .btn-danger:active {
     background: #9b1714 linear-gradient(to bottom, #b11a17, #9b1714); }
@@ -5944,17 +5960,6 @@ footer {
 
 textarea {
   resize: none; }
-
-.form-control {
-  height: auto;
-  padding: 8px 12px;
-  border: 2px solid #ebebeb;
-  border-radius: 0;
-  box-shadow: inset 0 1px 2px rgba(150, 160, 175, 0.1), inset 0 1px 15px rgba(150, 160, 175, 0.05); }
-
-.form-group > label {
-  text-transform: uppercase;
-  font-size: 13px; }
 
 .hr-title {
   height: auto;
