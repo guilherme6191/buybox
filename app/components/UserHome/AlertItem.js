@@ -53,9 +53,7 @@ class AlertItem extends React.Component {
     }
 
     delete() {
-        if (confirm("Esta ação é definitiva.")) {
-            this.props.onDelete(this.props._id);
-        }
+        this.props.onDelete(this.props._id);
     }
 
     render() {

@@ -79,6 +79,7 @@ exports.alertPost = function (req, res, next) {
                         'Por favor, tente mais tarde!'
                     });
                 } else {
+                    ProductCtrl.match(alert);
                     res.status(206).send({ alert });
                 }
             })
@@ -104,6 +105,7 @@ exports.alertPost = function (req, res, next) {
             if (err && err.code) {
                 res.status(500).send({ msg: 'Falha na inserção do Alerta de Preços. Por favor, tente mais tarde!' });
             } else {
+                ProductCtrl.match(alert);
                 res.status(206).send({ alert });
             }
         })

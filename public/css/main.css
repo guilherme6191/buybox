@@ -5836,8 +5836,9 @@ button.close {
 .admin-home label {
   margin: 0; }
 
-.admin-home .partners-container {
-  margin-top: 15px; }
+.admin-home .insert-container {
+  margin-top: 10px;
+  margin-bottom: 10px; }
 
 .admin-home .partner-item {
   height: 57px; }

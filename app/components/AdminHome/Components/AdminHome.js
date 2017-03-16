@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 
 import InsertPartnerForm from './InsertPartnerForm';
 import ViewPartnerForm from './ViewPartnerForm';
+import MyModal from '../../Modal'
 import {getPartners, createPartner, deletePartner} from '../actions';
 
 class AdminHome extends React.Component {
@@ -10,7 +11,8 @@ class AdminHome extends React.Component {
         super(props);
 
         this.state = {
-            addNew: false
+            addNew: false,
+            modalShown: false
         };
     }
 
@@ -31,10 +33,26 @@ class AdminHome extends React.Component {
     handleSubmit = (event) => {
         event.preventDefault();
         this.props.dispatch(createPartner(this.state));
+        this.toggleInsertForm();
     };
 
     handleDelete = (id) => {
-        this.props.dispatch(deletePartner(this.props.token, id));
+        this.setState({ selectedId: id });
+        this.modalShow();
+    };
+
+    modalClose = () => {
+        this.setState({ modalShown: false });
+        this.setState({ selectedId: null });
+    };
+
+    modalShow = () => {
+        this.setState({ modalShown: true })
+    };
+
+    modalConfirm = () => {
+        this.props.dispatch(deletePartner(this.props.token, this.state.selectedId));
+        this.modalClose();
     };
 
     render() {
@@ -54,7 +72,6 @@ class AdminHome extends React.Component {
 
         return (
             <div className="container admin-home">
-                <h2>Hello, Admin!</h2>
                 <div className="row">
                     <div className="col-sm-12">
                         <ul className="nav nav-sidebar">
@@ -64,12 +81,17 @@ class AdminHome extends React.Component {
                         </ul>
                     </div>
                 </div>
-                <div className="row">
+                <div className="row container insert-container">
                     {addForm}
                 </div>
-                <div className="row partners-container">
+                <div className="row container">
                     { this.props.ready ? partners : 'Carregando...'  }
                 </div>
+                <MyModal shown={this.state.modalShown}
+                         close={this.modalClose}
+                         text="Essa ação é irreversível."
+                         title="Tem certeza que deseja excluir este Parceiro?"
+                         confirm={this.modalConfirm}/>
             </div>
         );
     }
