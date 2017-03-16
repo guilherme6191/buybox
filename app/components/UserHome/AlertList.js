@@ -24,7 +24,6 @@ class AlertList extends React.Component {
     }
 
     handleDelete(id) {
-        debugger;
         this.setState({ selectedId: id });
         this.modalShow();
     }
