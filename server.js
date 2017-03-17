@@ -21,7 +21,7 @@ var productCtrl = require('./controllers/product');
 var CronJob = require('cron').CronJob;
 
 // Load environment variables from .env file
-dotenv.load();
+
 
 // ES6 Transpiler
 require('babel-core/register');
@@ -40,6 +40,10 @@ var routes = require('./app/routes');
 var configureStore = require('./app/store/configureStore').default;
 
 var app = express();
+
+if (app.get('env') === 'development') {
+    dotenv.load();
+}
 
 var compiler = webpack(config);
 
