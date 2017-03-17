@@ -50,7 +50,7 @@ class AlertList extends React.Component {
         return (
             <div className="col-sm-12">
                 <ul className="list-group">
-                    { this.props.ready ? alerts : 'Carregando...'  }
+                    { this.props.ready ? alerts : <div className="loader"></div>  }
                 </ul>
                 <MyModal shown={this.state.modalShown}
                          close={this.modalClose}

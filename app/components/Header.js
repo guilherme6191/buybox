@@ -33,10 +33,17 @@ class Header extends React.Component {
                     Admin
                 </IndexLink>
             </li>;
-        const homeLink = this.props.token &&
+        const homeLink = this.props.token && this.props.user && !this.props.user.partner &&
             <li>
                 <IndexLink to="/userHome">
                     <span>Home</span>
+                </IndexLink>
+            </li>;
+        const alertsLink = this.props.token && this.props.user &&
+            (this.props.user.admin || this.props.user.partner) &&
+            <li>
+                <IndexLink to="/alerts">
+                    <span>Alertas</span>
                 </IndexLink>
             </li>;
         const rightNav = this.props.token && this.props.user ? (
@@ -80,6 +87,7 @@ class Header extends React.Component {
                             {homeLink}
                             <li><Link to="/contact">Contato</Link></li>
                             {admin}
+                            {alertsLink}
                             <li><Link to="/trends">Precisando de ideias?</Link></li>
                         </ul>
                         <div style={ msgStyle }>
