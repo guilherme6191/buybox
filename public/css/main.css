@@ -5845,6 +5845,20 @@ button.close {
   .admin-home .partner-item label {
     padding: 7px 0; }
 
+.alerts-container .grid .grid-item {
+  min-height: 47px; }
+  .alerts-container .grid .grid-item .ram-cell {
+    width: 12%; }
+  .alerts-container .grid .grid-item .storage-cel {
+    width: 14%; }
+
+.alerts-container .grid .grid-checkbox {
+  width: 1%;
+  float: left;
+  /* position: relative; */
+  min-height: 3px;
+  padding-left: 15px; }
+
 html {
   position: relative;
   min-height: 100%; }

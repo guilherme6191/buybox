@@ -2,10 +2,19 @@ import React from 'react';
 import { connect } from 'react-redux';
 import CheckBoxList from './Grid';
 
+import {sendMessage} from '../../../actions/messages';
+import {createSuggestion} from '../actions';
 import {getAlerts} from '../../../actions/alert';
+
+import SuggestionModal from './SuggestionModal';
 
 
 class AlertsReport extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = { suggestionModalShown: false };
+    }
+
     componentDidMount() {
         if (!this.props.token) {
             return;
@@ -13,28 +22,59 @@ class AlertsReport extends React.Component {
         this.props.dispatch(getAlerts(this.props.token));
     }
 
-    handleCheckboxListChange = (values) => {
-        // values is array of selected item. e.g. ['apple', 'banana']
-        debugger;
+    handleSuggestion = (selectedItems) => {
+        const alertQt = selectedItems.length;
+
+        if (alertQt <= 0) {
+            this.props.dispatch(sendMessage(
+                'ALERT_NOT_SELECTED',
+                'Favor selecionar os um ou mais Alertas para que os usuários que os criaram ' +
+                'recebam sua sugestão.'
+            ));
+            return;
+        }
+        //select unique users
+        const userIds = selectedItems.map((item) => item.userId)
+            .sort()
+            .filter(function (item, pos, ary) {
+                return !pos || item != ary[pos - 1];
+            });
+
+        this.setState({
+            suggestionModalShown: true,
+            userQt: userIds.length,
+            alertQt,
+            userIds
+        });
     };
 
+    submitSuggestion = (data) => {
+        const suggestion = Object.assign({}, data, { userIds: this.state.userIds });
+        this.props.dispatch(createSuggestion(this.props.token, suggestion));
+        this.closeModal();
+    };
+
+    closeModal = () => {
+        this.setState({ suggestionModalShown: false });
+    };
 
     render() {
         const alerts = this.props.ready ?
             <CheckBoxList ref="chkboxList"
                           defaultData={this.props.alerts}
-                          onChange={this.handleCheckboxListChange}/>
-
+                          handleSuggestion={this.handleSuggestion}/>
             : <div className="loader"></div>;
         return (
-            <div>
+            <div className="alerts-container">
                 <h3>Alertas</h3>
-
-                <ul className="list-group">
-                    <li className="list-group-item-heading"><span>Ae</span>
-                    </li>
+                <ul className="list-group grid">
                     {alerts}
                 </ul>
+                <SuggestionModal shown={this.state.suggestionModalShown}
+                                 alertQt={this.state.alertQt}
+                                 userQt={this.state.userQt}
+                                 close={this.closeModal}
+                                 submitSuggestion={this.submitSuggestion}/>
             </div>
         );
     }

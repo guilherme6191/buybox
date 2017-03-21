@@ -34,6 +34,7 @@ var User = require('./models/User');
 var userController = require('./controllers/user');
 var alertController = require('./controllers/alert');
 var partnerController = require('./controllers/partner');
+var suggestionController = require('./controllers/suggestion');
 
 // React and Server-Side Rendering
 var routes = require('./app/routes');
@@ -65,7 +66,8 @@ app.use(cookieParser());
 
 app.use(function (req, res, next) {
     req.isAuthenticated = function () {
-        var token = (req.headers.authorization && req.headers.authorization.split(' ')[1]) || req.cookies.token;
+        var token = (req.headers.authorization && req.headers.authorization.split(' ')[1])
+            || req.cookies.token;
         try {
             return jwt.verify(token, process.env.TOKEN_SECRET);
         } catch (err) {
@@ -118,6 +120,9 @@ app.delete('/alert/:id', userController.ensureAuthenticated, alertController.ale
 //partners
 app.get('/partners', userController.ensureAuthenticated, partnerController.getPartners);
 app.delete('/partner', userController.ensureAuthenticated, partnerController.deletePartner);
+
+//suggestions
+app.post('/suggestion', userController.ensureAuthenticated, suggestionController.create);
 
 // React server rendering
 app.use(function (req, res) {
