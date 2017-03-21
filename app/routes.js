@@ -2,7 +2,7 @@ import React from 'react';
 import { IndexRoute, Route } from 'react-router';
 
 import App from './components/App';
-import AlertsContainer from './components/Alerts/AlertsContainer'
+import AlertsContainer from './components/Alert-Suggestion/AlertsContainer'
 import AdminHome from './components/AdminHome/Components/AdminHome';
 import Home from './components/Home';
 import UserHome from './components/UserHome/UserHome';

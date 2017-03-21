@@ -123,6 +123,7 @@ app.delete('/partner', userController.ensureAuthenticated, partnerController.del
 
 //suggestions
 app.post('/suggestion', userController.ensureAuthenticated, suggestionController.create);
+app.get('/suggestion/:userId', userController.ensureAuthenticated, suggestionController.get);
 
 // React server rendering
 app.use(function (req, res) {

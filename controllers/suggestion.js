@@ -33,3 +33,31 @@ exports.create = function (req, res, next) {
     })
 
 };
+
+exports.get = function (req, res, next) {
+    console.log("TESTE");
+    var userId = req.params.userId;
+    if (userId) {
+        Suggestion.find({ userIds: userId }, function (err, suggestions) {
+            if (!suggestions) {
+                res.status(404).send("not found");
+            }
+            else if (err && err.code) {
+                res.status(500).send("Falha ao resgatar Sugestões. Por favor, tente mais tarde.");
+            } else {
+                res.status(200).send({ suggestions });
+            }
+        })
+    } else {
+        Suggestion.find({}, function (err, suggestions) {
+            if (!suggestions) {
+                res.status(404).send("not found");
+            }
+            else if (err && err.code) {
+                res.status(500).send("Falha ao resgatar Sugestões. Por favor, tente mais tarde.");
+            } else {
+                res.status(200).send({ suggestions });
+            }
+        })
+    }
+};
