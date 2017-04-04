@@ -1,0 +1,37 @@
+.suggestions-container {
+
+  color: #808080;
+
+  h4 {
+    margin-left: 1%;
+  }
+
+  small {
+    margin-left: 1%;
+  }
+
+  .grid {
+    margin-top: 20px;
+    font-size: 14px;
+
+    .grid-item {
+      min-height: 65px;
+
+      .ram-cell {
+        width: 8%;
+      }
+
+      .storage-cel {
+        width: 14%;
+      }
+
+      .names-cel {
+        text-transform: uppercase;
+        color: #1c7b5e
+      }
+
+    }
+
+  }
+
+}

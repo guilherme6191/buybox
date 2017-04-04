@@ -18,20 +18,30 @@ exports.alertGetOne = function (req, res, next) {
 
 exports.alertGetAll = function (req, res, next) {
 
-    if (!req.body.userId) {
-        return res.status(400).send("userId necessário");
-    }
+    if (req.body.userId) {
+        Alert.find({ userId: req.body.userId }, function (err, alerts) {
+            if (!alerts) {
+                res.status(404).send("not found");
+            }
+            else if (err && err.code) {
+                res.status(500).send("Falha ao resgatar alertas. Por favor, tente mais tarde.");
+            } else {
+                res.status(200).send({ alerts });
+            }
+        })
+    } else {
 
-    Alert.find({ userId: req.body.userId }, function (err, alerts) {
-        if (!alerts) {
-            res.status(404).send("not found");
-        }
-        else if (err && err.code) {
-            res.status(500).send("Falha ao resgatar alertas. Por favor, tente mais tarde.");
-        } else {
-            res.status(200).send({ alerts });
-        }
-    })
+        Alert.find({}, function (err, alerts) {
+            if (!alerts) {
+                res.status(404).send("not found");
+            }
+            else if (err && err.code) {
+                res.status(500).send("Falha ao resgatar alertas. Por favor, tente mais tarde.");
+            } else {
+                res.status(200).send({ alerts });
+            }
+        })
+    }
 };
 
 /**

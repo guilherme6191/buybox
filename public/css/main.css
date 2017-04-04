@@ -5845,13 +5845,54 @@ button.close {
   .admin-home .partner-item label {
     padding: 7px 0; }
 
+.alerts-container .grid div .grid-heading {
+  background-color: #fff; }
+  .alerts-container .grid div .grid-heading .ram-cell {
+    width: 8%; }
+  .alerts-container .grid div .grid-heading .storage-cel {
+    width: 14%; }
+
+.alerts-container .grid .grid-item {
+  min-height: 47px; }
+  .alerts-container .grid .grid-item .ram-cell {
+    width: 8%; }
+  .alerts-container .grid .grid-item .storage-cel {
+    width: 14%; }
+
+.alerts-container .grid .grid-checkbox {
+  width: 1%;
+  float: left;
+  /* position: relative; */
+  min-height: 3px;
+  padding-left: 15px; }
+
+.suggestions-container {
+  color: #808080; }
+  .suggestions-container h4 {
+    margin-left: 1%; }
+  .suggestions-container small {
+    margin-left: 1%; }
+  .suggestions-container .grid {
+    margin-top: 20px;
+    font-size: 14px; }
+    .suggestions-container .grid .grid-item {
+      min-height: 65px; }
+      .suggestions-container .grid .grid-item .ram-cell {
+        width: 8%; }
+      .suggestions-container .grid .grid-item .storage-cel {
+        width: 14%; }
+      .suggestions-container .grid .grid-item .names-cel {
+        text-transform: uppercase;
+        color: #1c7b5e; }
+
 html {
   position: relative;
   min-height: 100%; }
 
 body {
   margin-bottom: 44px;
-  font-size: 15px; }
+  font-size: 15px;
+  color: #525252; }
 
 footer {
   position: absolute;
@@ -5898,8 +5939,29 @@ footer {
   margin-top: 0; }
 
 .panel-title {
-  font-size: 18px;
-  color: #424242; }
+  font-size: 18px; }
+
+.loader {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 1;
+  /* margin: -25px 0 0 -75px; */
+  border-radius: 50%;
+  border-top: 4px solid #3498db;
+  border-left: 4px solid #525252;
+  border-right: 4px solid #29b35b;
+  border-bottom: 4px solid white;
+  width: 30px;
+  height: 30px;
+  -webkit-animation: spin 2s linear infinite;
+  animation: spin 2s linear infinite; }
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg); }
+  100% {
+    transform: rotate(360deg); } }
 
 .btn-toolbar > .btn {
   float: none;

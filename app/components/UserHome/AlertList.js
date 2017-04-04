@@ -47,16 +47,18 @@ class AlertList extends React.Component {
             this.props.alerts.map(alert =>
                 <AlertItem key={alert._id} {...alert} onDelete={this.handleDelete}/>
             ) : <h4>Não há alertas cadastrados.</h4>;
+        const myModal = this.state.modalShown &&
+            <MyModal shown={this.state.modalShown}
+                     close={this.modalClose}
+                     text="Essa ação é irreversível."
+                     title="Tem certeza que deseja excluir este Alerta?"
+                     confirm={this.modalConfirm}/>;
         return (
             <div className="col-sm-12">
-                <ul className="list-group">
-                    { this.props.ready ? alerts : 'Carregando...'  }
+                <ul className="list-group" style={{marginBottom: '100px'}}>
+                    { this.props.ready ? alerts : <div className="loader"></div>  }
                 </ul>
-                <MyModal shown={this.state.modalShown}
-                         close={this.modalClose}
-                         text="Essa ação é irreversível."
-                         title="Tem certeza que deseja excluir este Alerta?"
-                         confirm={this.modalConfirm}/>
+                {myModal}
             </div>
         )
     }

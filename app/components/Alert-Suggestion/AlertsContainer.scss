@@ -1,0 +1,41 @@
+.alerts-container {
+
+  .grid {
+
+    div
+    .grid-heading {
+      background-color: #fff;
+
+      .ram-cell {
+        width: 8%;
+      }
+
+      .storage-cel {
+        width: 14%;
+      }
+    }
+
+    .grid-item {
+      min-height: 47px;
+
+      .ram-cell {
+        width: 8%;
+      }
+
+      .storage-cel {
+        width: 14%;
+      }
+
+    }
+
+    .grid-checkbox {
+      width: 1%;
+      float: left;
+      /* position: relative; */
+      min-height: 3px;
+      padding-left: 15px;
+    }
+
+  }
+
+}

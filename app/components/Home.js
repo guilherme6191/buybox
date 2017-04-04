@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux'
 import Messages from './Messages';
 import UserHome from './UserHome/UserHome';
-//<img src="../images/bb-logo-full.jpg" width="120px" alt="BuyBox"/>
+
 class Home extends React.Component {
 
     render() {

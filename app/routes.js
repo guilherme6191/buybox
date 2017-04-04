@@ -1,6 +1,8 @@
 import React from 'react';
 import { IndexRoute, Route } from 'react-router';
+
 import App from './components/App';
+import AlertsContainer from './components/Alert-Suggestion/AlertsContainer'
 import AdminHome from './components/AdminHome/Components/AdminHome';
 import Home from './components/Home';
 import UserHome from './components/UserHome/UserHome';
@@ -21,13 +23,24 @@ export default function getRoutes(store) {
             replace('/login');
         }
     };
+    const ensureIsAdmin = (nextState, replace) => {
+        if (!store.getState().auth.user.admin) {
+            replace('/');
+        }
+    };
+    const ensureIsAdminOrPartner = (nextState, replace) => {
+        if (!store.getState().auth.user.admin && !store.getState().auth.user.partner) {
+            replace('/');
+        }
+    };
+
     const skipIfAuthenticated = (nextState, replace) => {
         if (store.getState().auth.token) {
             replace('/');
         }
     };
-    const skipToHomeIfAuthenticated = (nextState, replace) => {
-        if (!store.getState().auth.token) {
+    const skipToHomeIfNotAuthenticatedOrPartner = (nextState, replace) => {
+        if (!store.getState().auth.token || (store.getState().auth.user && store.getState().auth.user.partner)) {
             replace('/');
         }
     };
@@ -46,9 +59,12 @@ export default function getRoutes(store) {
             <Route path="/forgot" component={Forgot} onEnter={skipIfAuthenticated} onLeave={clearMessages}/>
             <Route path='/reset/:token' component={Reset} onEnter={skipIfAuthenticated} onLeave={clearMessages}/>
             <Route path="/userhome">
-                <IndexRoute component={UserHome} onEnter={skipToHomeIfAuthenticated} onLeave={clearMessages}/>
+                <IndexRoute component={UserHome}
+                            onEnter={skipToHomeIfNotAuthenticatedOrPartner}
+                            onLeave={clearMessages}/>
             </Route>
-            <Route path="/adminHome" component={AdminHome} onEnter={ensureAuthenticated} onLeave={clearMessages}/>
+            <Route path="/adminHome" component={AdminHome} onEnter={ensureIsAdmin} onLeave={clearMessages}/>
+            <Route path="/alerts" component={AlertsContainer} onEnter={ensureIsAdminOrPartner} onLeave={clearMessages}/>
             <Route path="/addAlert" component={AddAlert} onEnter={ensureAuthenticated} onLeave={clearMessages}/>
             <Route path="/alert/:id" component={AlertForm} onEnter={ensureAuthenticated} onLeave={clearMessages}/>
             <Route path="/trends" component={Trends} onLeave={clearMessages}/>

@@ -36,6 +36,8 @@ $panel-body-padding: 30px;
 @import "../../app/components/Home";
 @import "../../app/components/UserHome/UserHome";
 @import "../../app/components/AdminHome/AdminHome";
+@import "../../app/components/Alert-Suggestion/AlertsContainer";
+@import "../../app/components/Alert-Suggestion/SuggestionsContainer";
 
 // Scaffolding
 // -------------------------
@@ -48,6 +50,7 @@ html {
 body {
   margin-bottom: 44px;
   font-size: 15px;
+  color: #525252;
 }
 
 footer {
@@ -118,8 +121,29 @@ footer {
 
 .panel-title {
   font-size: 18px;
-  color: #424242;
 }
+
+.loader {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 1;
+  /* margin: -25px 0 0 -75px; */
+  border-radius: 50%;
+  border-top: 4px solid #3498db;
+  border-left: 4px solid #525252;
+  border-right: 4px solid #29b35b;
+  border-bottom: 4px solid white;
+  width: 30px;
+  height: 30px;
+  -webkit-animation: spin 2s linear infinite;
+  animation: spin 2s linear infinite;
+}
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
 
 // Buttons
 // -------------------------

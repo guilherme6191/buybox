@@ -20,7 +20,10 @@ class AlertForm extends React.Component {
         if (this.props.params) {
             fetch('/alert/' + this.props.params.id, {
                 method: 'get',
-                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${this.props.token}` }
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${this.props.token}`
+                }
             }).then((response) => {
                 if (response.ok) {
                     response.json().then((json) => {
@@ -78,7 +81,8 @@ class AlertForm extends React.Component {
                         <div className="form-group col-sm-12">
                             <label>Nome do Alerta</label>
                             <div>
-                                <input defaultValue={this.state.fields.alertName} onChange={this.handleChange}
+                                <input defaultValue={this.state.fields.alertName}
+                                       onChange={this.handleChange}
                                        className="form-control"
                                        name="alertName"
                                        type="text"
@@ -96,7 +100,8 @@ class AlertForm extends React.Component {
                         <div className="form-group col-sm-4">
                             <label>Memória RAM</label>
                             <div>
-                                <select defaultValue={this.state.fields.ram} onChange={this.handleChange} name="ram"
+                                <select defaultValue={this.state.fields.ram}
+                                        onChange={this.handleChange} name="ram"
                                         className="form-control">
                                     <option value="1">1GB</option>
                                     <option value="2">2GB</option>
@@ -108,7 +113,8 @@ class AlertForm extends React.Component {
                         <div className="form-group col-sm-4">
                             <label>Armazenamento</label>
                             <div>
-                                <select defaultValue={this.state.fields.storage} onChange={this.handleChange}
+                                <select defaultValue={this.state.fields.storage}
+                                        onChange={this.handleChange}
                                         name="storage"
                                         className="form-control" required>
                                     <option value="8">8GB</option>
@@ -122,7 +128,8 @@ class AlertForm extends React.Component {
                         <div className="form-group col-sm-4">
                             <label>Dual Chip</label>
                             <div>
-                                <select defaultValue={this.state.fields.dualChip} onChange={this.handleChange}
+                                <select defaultValue={this.state.fields.dualChip}
+                                        onChange={this.handleChange}
                                         name="dualChip"
                                         className="form-control">
                                     <option value="true">Sim</option>
@@ -133,7 +140,8 @@ class AlertForm extends React.Component {
                         <div className="form-group col-sm-6">
                             <label>Camera Traseira</label>
                             <div>
-                                <select defaultValue={this.state.fields.rearCam} onChange={this.handleChange}
+                                <select defaultValue={this.state.fields.rearCam}
+                                        onChange={this.handleChange}
                                         name="rearCam"
                                         className="form-control">
                                     <option value="4">4 MP</option>
@@ -147,7 +155,8 @@ class AlertForm extends React.Component {
                         <div className="form-group col-sm-6">
                             <label>Camera Frontal</label>
                             <div>
-                                <select defaultValue={this.state.fields.frontCam} onChange={this.handleChange}
+                                <select defaultValue={this.state.fields.frontCam}
+                                        onChange={this.handleChange}
                                         name="frontCam"
                                         className="form-control">
                                     <option value="4">4 MP</option>
@@ -161,7 +170,8 @@ class AlertForm extends React.Component {
                         <div className="form-group col-sm-12">
                             <label>Preço que deseja pagar</label>
                             <div>
-                                <input defaultValue={this.state.fields.price} onChange={this.handleChange} name="price"
+                                <input defaultValue={this.state.fields.price}
+                                       onChange={this.handleChange} name="price"
                                        type="text" className="form-control"
                                        placeholder="(R$) Ex.: 1000,00" required/>
                             </div>
@@ -176,7 +186,7 @@ class AlertForm extends React.Component {
                         </div>
                     </form>
                 </div>
-            ) : <div className="container panel panel-body"><span> Carregando... </span></div>;
+            ) : <div className="loader"></div>;
 
         return (
             <div>
