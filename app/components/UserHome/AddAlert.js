@@ -3,13 +3,13 @@ import AlertForm from './AlertForm';
 
 class AddAlert extends React.Component {
 
-    render() {
-        return (
-            <div>
-                <AlertForm />
-            </div>
-        )
-    }
+  render() {
+    return (
+      <div>
+        <AlertForm />
+      </div>
+    )
+  }
 }
 
 export default AddAlert
