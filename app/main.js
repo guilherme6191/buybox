@@ -10,7 +10,7 @@ const store = configureStore(window.INITIAL_STATE);
 
 ReactDOM.render(
   <Provider store={store}>
-    <Router history={browserHistory} routes={getRoutes(store)}/>
+    <Router history={browserHistory} routes={getRoutes(store)} />
   </Provider>,
   document.getElementById('app')
 );
