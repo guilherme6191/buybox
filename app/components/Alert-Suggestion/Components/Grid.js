@@ -55,7 +55,7 @@ module.exports = React.createClass({
     } else if (event.target.value === '1') {
       var selectedValues = [];
 
-      var newData = this.props.defaultData.map(function(item) {
+      var newData = this.state.data.map(function(item) {
         selectedValues.push(item._id);
         return Object.assign({}, item, { checked: true });
       });
@@ -63,7 +63,7 @@ module.exports = React.createClass({
       this.setState({ data: newData });
 
     } else if (event.target.value === '2') {
-      var selectedItems = this.props.defaultData.filter((item) => {
+      var selectedItems = this.state.data.filter((item) => {
         return item.checked && item;
       });
       this.props.handleSuggestion(selectedItems);
