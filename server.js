@@ -17,7 +17,6 @@ var request = require('request');
 var sass = require('node-sass-middleware');
 var webpack = require('webpack');
 var config = require('./webpack.config');
-var productCtrl = require('./controllers/product');
 var CronJob = require('cron').CronJob;
 
 // ES6 Transpiler
@@ -32,6 +31,10 @@ var userController = require('./controllers/user');
 var alertController = require('./controllers/alert');
 var partnerController = require('./controllers/partner');
 var suggestionController = require('./controllers/suggestion');
+var productController = require('./controllers/product');
+
+// Helpers
+var productHelper = require('./helpers/product');
 
 // React and Server-Side Rendering
 var routes = require('./app/routes');
@@ -121,6 +124,9 @@ app.delete('/partner', userController.ensureAuthenticated, partnerController.del
 //suggestions
 app.post('/suggestion', userController.ensureAuthenticated, suggestionController.create);
 app.get('/suggestion/:userId', userController.ensureAuthenticated, suggestionController.get);
+
+//products
+app.get('/products', userController.ensureAuthenticated, productController.get);
 
 // React server rendering
 app.use(function(req, res) {

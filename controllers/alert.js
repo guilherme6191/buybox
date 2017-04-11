@@ -1,6 +1,6 @@
 var request = require('request');
 var Alert = require('../models/Alert');
-var ProductCtrl = require('./product');
+var ProductCtrl = require('../helpers/product');
 
 exports.alertGetOne = function(req, res, next) {
 
