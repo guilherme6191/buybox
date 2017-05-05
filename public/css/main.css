@@ -5819,14 +5819,13 @@ button.close {
     display: none !important; } }
 
 .mkt-page .mkt-panel {
-  height: 500px;
+  min-height: 500px;
   padding: 100px 0; }
   .mkt-page .mkt-panel h1 {
     color: #4f5359;
     font-size: 48px; }
   .mkt-page .mkt-panel p {
     font-size: 18px;
-    padding: 0 130px;
     color: #626872; }
 
 .user-home .product-list {
@@ -6233,7 +6232,7 @@ body {
 footer {
   position: absolute;
   width: 100%;
-  height: 44px;
+  min-height: 44px;
   padding: 10px 30px;
   bottom: 0;
   background-color: #fff;
