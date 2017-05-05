@@ -120,7 +120,7 @@ module.exports = React.createClass({
         <div>
           <span>Ações:&nbsp;</span>
           <select value={this.state.actionsValue} onChange={this.selectChange}>
-            <option value="-1">&nbsp;</option>
+            <option value="-1">Opções</option>
             <option value="1">Selecionar todos</option>
             <option value="0">Limpar seleção</option>
             <option value="2">Criar sugestão</option>

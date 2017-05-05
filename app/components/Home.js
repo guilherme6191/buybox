@@ -32,7 +32,7 @@ class Home extends React.Component {
             <div className="panel mkt-panel">
               <div className="panel-body text-center">
                 <h1>Como funciona?</h1>
-                <p>Você cadastra suas necessidades, exemplo: Celular com 32GB de RAM e câmera de
+                <p>Você cadastra suas necessidades, exemplo: Celular com 32GB de Memória e câmera de
                   12MP,
                   por no máximo R$ 1.200,00.</p>
                 <p>A gente te notifica por email assim que encontrarmos <b>qualquer</b> produto que
