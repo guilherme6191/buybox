@@ -82,6 +82,7 @@
     "npm": "3.10.10"
   },
   "devDependencies": {
-    "react-select": "^1.0.0-rc.3"
+    "react-select": "^1.0.0-rc.3",
+    "react-paginate": "4.3.1"
   }
 }
