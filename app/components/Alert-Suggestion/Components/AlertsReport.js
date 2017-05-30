@@ -8,7 +8,6 @@ import {getAlerts} from '../../../actions/alert';
 
 import SuggestionModal from './SuggestionModal';
 
-
 class AlertsReport extends React.Component {
   constructor(props) {
     super(props);

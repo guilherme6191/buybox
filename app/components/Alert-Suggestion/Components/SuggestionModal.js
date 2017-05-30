@@ -27,6 +27,9 @@ class SuggestionModal extends React.Component {
   };
 
   handleConfirm = () => {
+    if (!this.state.url || !this.state.price || !this.state.companyName) {
+      return;
+    }
     this.props.submitSuggestion(this.state);
     this.setState(initialState);
   };
