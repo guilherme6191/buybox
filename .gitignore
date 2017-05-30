@@ -31,3 +31,7 @@ Thumbs.db
 
 # Webpack generated bundle
 public/js/bundle.js
+
+# Generated Files in Build
+public/css/main.css
+public/js/bundle.js
