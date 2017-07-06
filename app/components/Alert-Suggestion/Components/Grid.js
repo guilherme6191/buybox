@@ -104,6 +104,8 @@ module.exports = React.createClass({
       filtering: [],
       defaultFilters: getDefaultFilters(),
       data: this.props.defaultData.slice(0, PAGE_SIZE) || []
+    }, () => {
+      this.reset()
     });
   },
 
