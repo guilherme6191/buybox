@@ -61,13 +61,13 @@ module.exports = React.createClass({
     this.setState({ data: newData, actionsValue: -1 });
   },
 
-  selectChange: function(event) {
+  selectChange: function(event, filteredData) {
     if (event.target.value === '0') {
       this.reset();
     } else if (event.target.value === '1') {
       var selectedValues = [];
 
-      var newData = this.state.data.map(function(item) {
+      var newData = filteredData.map(function(item) {
         selectedValues.push(item._id);
         return Object.assign({}, item, { checked: true });
       });
@@ -75,7 +75,7 @@ module.exports = React.createClass({
       this.setState({ data: newData });
 
     } else if (event.target.value === '2') {
-      var selectedItems = this.state.data.filter((item) => {
+      var selectedItems = filteredData.filter((item) => {
         return item.checked && item;
       });
       this.props.handleSuggestion(selectedItems);
@@ -102,7 +102,8 @@ module.exports = React.createClass({
   clearFilters: function () {
     this.setState({
       filtering: [],
-      defaultFilters: getDefaultFilters()
+      defaultFilters: getDefaultFilters(),
+      data: this.props.defaultData.slice(0, PAGE_SIZE) || []
     });
   },
 
@@ -162,7 +163,7 @@ module.exports = React.createClass({
       <div>
         <div>
           <span>Ações:&nbsp;</span>
-          <select value={this.state.actionsValue} onChange={this.selectChange}>
+          <select value={this.state.actionsValue} onChange={(e) => this.selectChange(e ,filteredData)}>
             <option value="-1">Opções</option>
             <option value="1">Selecionar todos</option>
             <option value="0">Limpar seleção</option>
