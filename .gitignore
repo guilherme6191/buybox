@@ -33,4 +33,4 @@ Thumbs.db
 public/js/bundle.js
 
 # Generated CSS Files in Build
-public/css/main.css
+public/css/main.scss
